@@ -1,0 +1,34 @@
+volumes:
+  english_words_development:
+  db-data:
+services:
+  # --------------------------------------
+  db:
+    image: postgres:16.1
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/mysql
+  # --------------------------------------
+  rails:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      BUNDLE_HOME: '/webapp'
+      DATABASE_NAME: 'english_words_development'
+      DATABASE_USERNAME: 'root'
+      DATABASE_HOSTNAME: 'mysql'
+      DATABASE_PASSWORD: 'pass'
+      RAILS_PORT: 53000
+    volumes:
+      - english_words_development:/webapp
+    tty: true
+    stdin_open: true
+    networks:
+      - default
+    ports:
+      - '53000:3000'
