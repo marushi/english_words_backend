@@ -1,5 +1,4 @@
 volumes:
-  english_words_development:
   db-data:
 services:
   # --------------------------------------
@@ -18,14 +17,14 @@ services:
       - db
     env_file: .env
     environment:
-      BUNDLE_HOME: '/webapp'
+      BUNDLE_HOME: '/app'
       DATABASE_NAME: 'english_words_development'
       DATABASE_USERNAME: 'root'
       DATABASE_HOSTNAME: 'mysql'
       DATABASE_PASSWORD: 'pass'
       RAILS_PORT: 53000
     volumes:
-      - english_words_development:/webapp
+      - .:/app
     tty: true
     stdin_open: true
     networks:
