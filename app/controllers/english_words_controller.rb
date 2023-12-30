@@ -3,11 +3,9 @@ class EnglishWordsController < ApplicationController
     render json: EnglishWord.all
   end
 
-  def create
-  end
+  def create; end
 
-  def update
-  end
+  def update; end
 
   def index; end
 end

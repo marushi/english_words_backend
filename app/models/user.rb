@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-    has_many :english_words, dependent: :destroy
+  has_many :english_words, dependent: :destroy
 end
 
 # == Schema Information
