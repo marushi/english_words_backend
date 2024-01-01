@@ -2,5 +2,7 @@
 #
 
 Rails.application.routes.draw do
-  root 'english_words#index'
+  get 'home/index'
+  post 'authentication/authenticate_with_google'
+  root 'home#index'
 end

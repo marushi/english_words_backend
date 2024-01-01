@@ -18,15 +18,6 @@ gem 'sqlite3', '~> 1.4'
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>= 6.0'
 
-# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem 'importmap-rails'
-
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
-
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
-
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
 
@@ -52,6 +43,9 @@ gem 'bootsnap', require: false
 # gem "image_processing", "~> 1.2"
 
 gem 'aws-sdk-cognitoidentityprovider', '~> 1.85'
+gem 'foreman', '~> 0.87.2'
+gem 'jwt'
+gem 'vite_rails', '~> 3.0.17'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

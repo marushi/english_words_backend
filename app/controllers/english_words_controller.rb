@@ -1,11 +1,27 @@
 class EnglishWordsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:index]
+
   def all
-    render json: EnglishWord.all
+    render json: EnglishWord.where(user_id: current_user.id)
   end
 
-  def create; end
+  def create
+    english_word = EnglishWord.new(word: params[:word], user_id: current_user.id)
+    if english_word.save
+      render json: english_word
+    else
+      render json: { errors: english_word.errors }, status: :unprocessable_entity
+    end
+  end
 
-  def update; end
+  def update
+    english_word = EnglishWord.find(params[:id])
+    if english_word.update(learned_at: params[:learned_at])
+      render json: english_word
+    else
+      render json: { errors: english_word.errors }, status: :unprocessable_entity
+    end
+  end
 
   def index; end
 end
