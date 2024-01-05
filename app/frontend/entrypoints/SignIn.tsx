@@ -1,16 +1,21 @@
 import ReactDOM from 'react-dom/client';
 import '../src/index.css';
+import { AppLayout } from '../components/AppLayout';
+import { Divider, Typography } from '@mui/material';
 import React from 'react';
+
 
 const App = () => {
     return (
         <React.StrictMode>
-            <div>
-                <h1>Sign In</h1>
-                <hr />
-                <a href="http://localhost:53000/authentication/sign_in">Sign In with Google</a>
-            </div>
-        </React.StrictMode >
+            <AppLayout>
+                <div>
+                    <Typography variant="h1">Sign In</Typography>
+                    <Divider orientation="horizontal" />
+                    <a href="http://localhost:53000/authentication/sign_in">Sign In with Google</a>
+                </div>
+            </AppLayout>
+        </React.StrictMode>
     );
 };
 
