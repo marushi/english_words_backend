@@ -1,32 +1,24 @@
 class AuthenticationController < ApplicationController
-  skip_before_action :authenticate_request, only: [:authenticate_with_google]
+  skip_before_action :authenticate_request
 
-  def authenticate_with_google
-    google_id_token = params[:google_id_token]
-    aws_client_id = ENV['AWS_COGNITO_APP_CLIENT_ID']
+  def index; end
+
+  def sign_in
     client = Aws::CognitoIdentityProvider::Client.new
+    resp = client.list_identity_providers({
+                                            user_pool_id: ENV['AWS_COGNITO_POOL_ID']
+                                          })
 
-    begin
-      resp = client.initiate_auth({
-                                    auth_flow: 'ADMIN_NO_SRP_AUTH',
-                                    client_id: ENV['AWS_COGNITO_APP_CLIENT_ID'],
-                                    auth_parameters: {
-                                      'USERNAME': google_id_token,
-                                      'SECRET_HASH': compute_secret_hash(ENV['AWS_COGNITO_APP_CLIENT_ID'],
-                                                                         google_id_token)
-                                    }
-                                  })
-      render json: { authentication_result: resp.authentication_result }, status: :ok
-    rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-      render json: { error: e.message }, status: :unauthorized
-    end
+    redirect_to redirect_uri, allow_other_host: true
   end
 
   private
 
-  def compute_secret_hash(client_id, token)
-    digest = OpenSSL::Digest.new('sha256')
-    hmac = OpenSSL::HMAC.digest(digest, 'CLIENT_SECRET', token + client_id)
-    Base64.encode64(hmac).strip
+  def redirect_uri
+    domain = ENV['AWS_COGNITO_DOMAIN']
+    client_id = ENV['AWS_COGNITO_APP_CLIENT_ID']
+    redirect_uri = ENV['AWS_COGNITO_REDIRECT_URI']
+
+    "#{domain}/login?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}"
   end
 end

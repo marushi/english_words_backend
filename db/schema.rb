@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_231_229_130_755) do
+ActiveRecord::Schema[7.1].define(version: 20_240_104_142_501) do
   create_table 'english_words', force: :cascade do |t|
     t.string 'word', null: false
     t.datetime 'learned_at'
@@ -21,10 +21,12 @@ ActiveRecord::Schema[7.1].define(version: 20_231_229_130_755) do
   end
 
   create_table 'users', force: :cascade do |t|
-    t.string 'uid', null: false
-    t.string 'auth_provider', null: false
     t.datetime 'created_at', default: -> { 'CURRENT_TIMESTAMP' }, null: false
     t.datetime 'updated_at', default: -> { 'CURRENT_TIMESTAMP' }, null: false
+    t.string 'cognito_uuid', null: false
+    t.string 'refresh_token'
+    t.integer 'expires_in'
+    t.datetime 'authorized_at', null: false
   end
 
   add_foreign_key 'english_words', 'users'

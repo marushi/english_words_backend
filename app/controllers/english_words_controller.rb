@@ -1,6 +1,4 @@
 class EnglishWordsController < ApplicationController
-  skip_before_action :authenticate_request, only: [:index]
-
   def all
     render json: EnglishWord.where(user_id: current_user.id)
   end

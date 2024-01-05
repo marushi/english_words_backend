@@ -1,20 +1,39 @@
 class ApplicationController < ActionController::API
+  include AuthenticationHelper
+
   before_action :authenticate_request
   helper_method :current_user
 
   private
 
   def authenticate_request
-    header = request.headers['Authorization']
-    header = header.split(' ').last if header
+    Rails.logger.info '====================='
+
+    cognito_uuid = session[:cognito_uuid]
+    @current_user = User.find_by(cognito_uuid:)
+    @current_user.verify_access_expiration!
+  rescue User::AccessTokenExpiredError => e
     begin
-      @decoded = JwtService.decode(header)
-      @current_user = User.find_by(uid: @decoded[:user_id])
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { errors: e.message }, status: :unauthorized
-    rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+      authorize_with_refresh_token!
+    rescue CognitoTokensMissingError => e
+      redirect_to authentication_path
     end
+  rescue ActiveRecord::RecordNotFound => e
+    redirect_to authentication_path
+  end
+
+  def authorize_with_refresh_token!
+    oauth2_token_response = faraday_connection.post do |req|
+      req.params['grant_type'] = 'refresh_token'
+      req.params['client_id'] = ENV['AWS_COGNITO_APP_CLIENT_ID']
+      req.params['client_secret'] = ENV['AWS_COGNITO_APP_CLIENT_SECRET']
+      req.params['refresh_token'] = @current_user.refresh_token
+      req.params['scope'] = 'aws.cognito.signin.user.admin'
+    end
+
+    Rails.logger.info JSON.parse(oauth2_token_response.body).keys
+
+    store_tokens!(oauth2_token_response)
   end
 
   attr_reader :current_user

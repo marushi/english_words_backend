@@ -2,7 +2,10 @@
 #
 
 Rails.application.routes.draw do
-  get 'home/index'
-  post 'authentication/authenticate_with_google'
   root 'home#index'
+
+  get 'authentication', to: 'authentication#index'
+  get 'authentication/sign_in'
+
+  get 'session/cognito_callback'
 end

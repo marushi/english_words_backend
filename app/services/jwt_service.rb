@@ -10,7 +10,6 @@ class JwtService
     body = JWT.decode(token, HMAC_SECRET, true, { algorithm: 'HS256' })[0]
     HashWithIndifferentAccess.new body
   rescue JWT::DecodeError => e
-    # Handle decode errors, e.g., by raising a custom exception
-    raise InvalidTokenError
+    raise e
   end
 end
