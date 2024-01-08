@@ -3,6 +3,7 @@ class EnglishWordsController < ApplicationController
     render json: EnglishWord.where(user_id: current_user.id)
   end
 
+  def index; end
   def create
     english_word = EnglishWord.new(word: params[:word], user_id: current_user.id)
     if english_word.save
@@ -21,5 +22,4 @@ class EnglishWordsController < ApplicationController
     end
   end
 
-  def index; end
 end

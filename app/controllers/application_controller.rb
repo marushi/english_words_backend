@@ -7,31 +7,27 @@ class ApplicationController < ActionController::API
   private
 
   def authenticate_request
-    Rails.logger.info '====================='
-
     cognito_uuid = session[:cognito_uuid]
     @current_user = User.find_by(cognito_uuid:)
     @current_user.verify_access_expiration!
-  rescue User::AccessTokenExpiredError => e
+  rescue User::AccessTokenExpiredError
     begin
       authorize_with_refresh_token!
-    rescue CognitoTokensMissingError => e
+    rescue CognitoTokensMissingError
       redirect_to authentication_path
     end
-  rescue ActiveRecord::RecordNotFound => e
+  rescue ActiveRecord::RecordNotFound
     redirect_to authentication_path
   end
 
   def authorize_with_refresh_token!
     oauth2_token_response = faraday_connection.post do |req|
       req.params['grant_type'] = 'refresh_token'
-      req.params['client_id'] = ENV['AWS_COGNITO_APP_CLIENT_ID']
-      req.params['client_secret'] = ENV['AWS_COGNITO_APP_CLIENT_SECRET']
+      req.params['client_id'] = ENV.fetch('AWS_COGNITO_APP_CLIENT_ID', nil)
+      req.params['client_secret'] = ENV.fetch('AWS_COGNITO_APP_CLIENT_SECRET', nil)
       req.params['refresh_token'] = @current_user.refresh_token
       req.params['scope'] = 'aws.cognito.signin.user.admin'
     end
-
-    Rails.logger.info JSON.parse(oauth2_token_response.body).keys
 
     store_tokens!(oauth2_token_response)
   end

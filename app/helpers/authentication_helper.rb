@@ -2,8 +2,8 @@ module AuthenticationHelper
   class CognitoTokensMissingError < StandardError; end
 
   def faraday_connection
-    uri = ENV['AWS_COGNITO_DOMAIN'] + '/oauth2/token'
-    client = Aws::CognitoIdentityProvider::Client.new
+    uri = "#{ENV.fetch('AWS_COGNITO_DOMAIN', nil)}/oauth2/token"
+    Aws::CognitoIdentityProvider::Client.new
 
     Faraday.new(url: uri) do |faraday|
       faraday.request :url_encoded
@@ -39,7 +39,7 @@ module AuthenticationHelper
     user = User.find_or_initialize_by(cognito_uuid:)
     update_params = {
       expires_in:,
-      authorized_at: Time.now
+      authorized_at: Time.zone.now
     }
 
     update_params[:refresh_token] = refresh_token unless refresh_token.nil?

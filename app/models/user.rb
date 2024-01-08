@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :english_words, dependent: :destroy
 
   def verify_access_expiration!
-    raise AccessTokenExpiredError if authorized_at + expires_in.seconds < Time.now
+    raise AccessTokenExpiredError if authorized_at + expires_in.seconds < Time.zone.now
   end
 end
 

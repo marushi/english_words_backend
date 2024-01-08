@@ -8,8 +8,9 @@ class JwtService
 
   def self.decode(token)
     body = JWT.decode(token, HMAC_SECRET, true, { algorithm: 'HS256' })[0]
-    HashWithIndifferentAccess.new body
+    ActiveSupport::HashWithIndifferentAccess.new body
   rescue JWT::DecodeError => e
+    Rails.logger.error e.message
     raise e
   end
 end

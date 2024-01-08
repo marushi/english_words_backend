@@ -11,7 +11,7 @@ class SessionController < ApplicationController
   private
 
   def exchange_authorization_code_for_tokens(authorization_code)
-    uri = ENV['AWS_COGNITO_DOMAIN'] + '/oauth2/token'
+    uri = "#{ENV.fetch('AWS_COGNITO_DOMAIN', nil)}/oauth2/token"
 
     faraday_connection = Faraday.new(url: uri) do |faraday|
       faraday.request :url_encoded
@@ -20,9 +20,9 @@ class SessionController < ApplicationController
 
     faraday_connection.post do |req|
       req.params['grant_type'] = 'authorization_code'
-      req.params['client_id'] = ENV['AWS_COGNITO_APP_CLIENT_ID']
-      req.params['client_secret'] = ENV['AWS_COGNITO_APP_CLIENT_SECRET']
-      req.params['redirect_uri'] = ENV['AWS_COGNITO_REDIRECT_URI']
+      req.params['client_id'] = ENV.fetch('AWS_COGNITO_APP_CLIENT_ID', nil)
+      req.params['client_secret'] = ENV.fetch('AWS_COGNITO_APP_CLIENT_SECRET', nil)
+      req.params['redirect_uri'] = ENV.fetch('AWS_COGNITO_REDIRECT_URI', nil)
       req.params['code'] = authorization_code
       req.params['scope'] = 'aws.cognito.signin.user.admin'
     end
