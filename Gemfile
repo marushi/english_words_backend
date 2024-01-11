@@ -46,6 +46,7 @@ gem 'aws-sdk-cognitoidentityprovider', '~> 1.85'
 gem 'faraday'
 gem 'foreman', '~> 0.87.2'
 gem 'jwt'
+gem 'ruby-openai'
 gem 'vite_rails', '~> 3.0.17'
 
 group :development, :test do

@@ -5,11 +5,13 @@ class EnglishWordsController < ApplicationController
 
   def index; end
   def create
-    english_word = EnglishWord.new(word: params[:word], user_id: current_user.id)
-    if english_word.save
-      render json: english_word
-    else
-      render json: { errors: english_word.errors }, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      params[:words].each do |word|
+        EnglishWord.create!(word:, user_id: current_user.id)
+      end
+      render json: { status: 'ok' }, status: :ok
+    rescue StandardError => e
+      render json: { errors: e.message}, status: :unprocessable_entity
     end
   end
 

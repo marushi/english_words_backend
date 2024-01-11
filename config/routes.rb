@@ -11,6 +11,7 @@
 #                                          POST  /english_words(.:format)                                                                          english_words#create
 #                             english_word PATCH /english_words/:id(.:format)                                                                      english_words#update
 #                                          PUT   /english_words/:id(.:format)                                                                      english_words#update
+#                           search_english POST  /search_english(.:format)                                                                         search_english#search
 #            rails_postmark_inbound_emails POST  /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
 #               rails_relay_inbound_emails POST  /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
 #            rails_sendgrid_inbound_emails POST  /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
@@ -48,4 +49,6 @@ Rails.application.routes.draw do
       get 'list', to: 'english_words#index', as: 'list'
     end
   end
+
+  post 'search_english', to: 'search_english#search'
 end

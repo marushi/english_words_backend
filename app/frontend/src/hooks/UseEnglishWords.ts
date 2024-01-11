@@ -10,15 +10,33 @@ export const useEnglishWords = () => {
         return result;
     }
 
-    const createEnglishWord = async (englishWord: string) => {
+    const createEnglishWords = async (englishWords: string[]) => {
         axios.post('http://localhost:53000/english_words', {
-            word: englishWord
+            words: englishWords
         })
             .then((response) => {
                 console.log(response);
             });
     }
 
+    const searchEnglishWords = async (
+        keyword: string,
+        situation: string,
+        style: string,
+        difficulty: string,
+    ) => {
+        const result = await axios.post('http://localhost:53000/search_english',
+            {
+                "keyword": keyword,
+                "situation": situation,
+                "style": style,
+                "difficulty": difficulty,
+                "type": "単語"
+            })
 
-    return { fetchEnglishWords, createEnglishWord }
+        return result.data;
+    }
+
+
+    return { fetchEnglishWords, createEnglishWords, searchEnglishWords }
 }

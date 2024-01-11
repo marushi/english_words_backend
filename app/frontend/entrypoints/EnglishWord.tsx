@@ -7,11 +7,14 @@ import {
     Autocomplete,
     Box,
     Button,
+    Checkbox,
     FormControl,
     IconButton,
     InputLabel,
     List,
     ListItem,
+    ListItemButton,
+    ListItemIcon,
     ListItemText,
     MenuItem,
     Select,
@@ -30,8 +33,10 @@ const toggleLabels = ["英語リスト", "英語検索"];
 const App = () => {
     const [englishWords, setEnglishWords] = useState<EnglishWord[]>([]);
     const [selectedToggle, setSelectedToggle] = useState<string>(toggleLabels[0]);
+    const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<string[]>([]);
+    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<string[]>([]);
 
-    const { fetchEnglishWords, createEnglishWord } = useEnglishWords();
+    const { fetchEnglishWords, searchEnglishWords, createEnglishWords } = useEnglishWords();
     useEffect(() => {
         fetchEnglishWords().then((results) => {
             const englishWords: EnglishWord[] = results.map((result) => {
@@ -55,7 +60,7 @@ const App = () => {
                         </ToggleButton>
                     })}
                 </ToggleButtonGroup>
-                {selectedToggle === toggleLabels[0] ? (<EnglishWordsList englishWords={englishWords} />) : (<SearchForm onSearch={() => { }} />)}
+                {selectedToggle === toggleLabels[0] ? (<EnglishWordsList englishWords={englishWords} />) : (<SearchForm searchEnglishWords={searchEnglishWords} setSearchResultEnglishWords={setSearchResultEnglishWords} searchResultEnglishWords={searchResultEnglishWords} checkedResultEnglishWords={checkedResultEnglishWords} setCheckedResultEnglishWords={setCheckedResultEnglishWords} createEnglishWords={createEnglishWords} />)}
             </AppLayout>
         </React.StrictMode>
     );
@@ -92,15 +97,29 @@ const Title = () => {
     );
 }
 
-const SearchForm: React.FC<{
-    onSearch: (searchParams: { keyword: string; type: string }) => void;
-}> = ({ onSearch }) => {
+const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, searchResultEnglishWords, checkedResultEnglishWords, setCheckedResultEnglishWords, createEnglishWords }) => {
     const [keyword, setKeyword] = useState<string>('');
     const [situation, setSituation] = useState<Situation | ''>('');
     const [conversationStyle, setConversationStyle] = useState<ConversationStyle | ''>('');
     const [difficulty, setDifficulty] = useState<Difficulty | ''>('');
 
-    const handleSearch = () => { };
+    const handleSearch = async () => {
+        const result: Object = await searchEnglishWords(keyword, situation, conversationStyle, difficulty);
+        setSearchResultEnglishWords(result["english_vocabulary_list"].filter(word => word !== ""));
+    };
+
+    const handleToggle = (value: string) => () => {
+        const currentIndex = checkedResultEnglishWords.indexOf(value);
+        const newChecked = [...checkedResultEnglishWords];
+        // 既にチェックされている場合はチェックを外し、チェックされていない場合はチェックを入れる
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
+        }
+        setCheckedResultEnglishWords(newChecked);
+    };
+
 
     return (
         <Box sx={{ marginTop: "16px", padding: "16px", border: "1px solid #e0e0e0", display: "flex", flexDirection: "column" }}>
@@ -110,12 +129,12 @@ const SearchForm: React.FC<{
                 検索条件
             </Typography >
             <TextField
-                label="Keyword"
+                label="キーワード"
                 variant="outlined"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
             />
-            <FormControl sx={{ marginTop: "8px" }}>
+            <FormControl sx={{ marginTop: "12px" }}>
                 <InputLabel>シチュエーション</InputLabel>
                 <Select
                     value={situation}
@@ -127,7 +146,7 @@ const SearchForm: React.FC<{
                 </Select>
             </FormControl>
 
-            <FormControl sx={{ marginTop: "8px" }}>
+            <FormControl sx={{ marginTop: "12px" }}>
                 <InputLabel>シーン</InputLabel>
                 <Select
                     value={conversationStyle}
@@ -139,7 +158,7 @@ const SearchForm: React.FC<{
                 </Select>
             </FormControl>
 
-            <FormControl sx={{ marginTop: "8px" }}>
+            <FormControl sx={{ marginTop: "12px" }}>
                 <InputLabel>難しさ</InputLabel>
                 <Select
                     value={difficulty}
@@ -152,9 +171,63 @@ const SearchForm: React.FC<{
                 </Select>
             </FormControl>
 
-            <Button variant="contained" onClick={handleSearch} sx={{ marginTop: "8px" }}>
-                Search
+            <Button variant="contained" onClick={handleSearch} sx={{ marginTop: "16px" }}>
+                検索
             </Button>
+
+            {searchResultEnglishWords.length > 0 ?
+                <Box>
+                    <List>
+                        {searchResultEnglishWords.map((word: string) => {
+                            const labelId = `checkbox-list-label-${word}`;
+
+                            return (
+                                <ListItemButton role={undefined} onClick={handleToggle(word)} dense
+                                    sx={{
+                                        borderBottom: "0.5px solid #e0e0e0",
+                                    }}
+                                >
+                                    <ListItemIcon>
+                                        <Checkbox
+                                            edge="start"
+                                            checked={checkedResultEnglishWords.indexOf(word) !== -1}
+                                            tabIndex={-1}
+                                            disableRipple
+                                            inputProps={{ 'aria-labelledby': labelId }}
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemText id={labelId} primary={word} />
+                                </ListItemButton>
+                            );
+                        })}
+                    </List>
+                    <Box
+                        sx={{ padding: "0", margin: "0", display: "flex", flexDirection: "row" }}
+                    >
+                        <Button
+                            variant="contained"
+                            sx={{
+                                width: "30%", backgroundColor: "#e0e0e0", color: "#000000", ":hover": {
+                                    backgroundColor: "#b0b0b0",
+                                }
+                            }}
+                            onClick={() => createEnglishWords(checkedResultEnglishWords)}
+                        >
+                            クリア
+                        </Button>
+
+                        <Box sx={{ width: "16px" }} />
+
+                        <Button
+                            variant="contained"
+                            sx={{ width: "70%" }}
+                            onClick={() => createEnglishWords(checkedResultEnglishWords)}
+                        >
+                            追加
+                        </Button>
+                    </Box>
+                </Box>
+                : <></>}
         </Box >
     );
 };
