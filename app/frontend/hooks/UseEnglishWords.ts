@@ -1,6 +1,6 @@
 
 import { useFetchAPI } from './UseFetchAPI';
-import axios from '../../../../node_modules/axios/index';
+import axios from '../../../node_modules/axios/index';
 
 export const useEnglishWords = () => {
     const { fetchAPI } = useFetchAPI();

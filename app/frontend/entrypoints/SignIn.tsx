@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import '../src/index.css';
-import { AppLayout } from '../src/components/AppLayout';
+import { AppLayout } from '../components/AppLayout';
 import { Divider, Typography } from '@mui/material';
 import React from 'react';
 
