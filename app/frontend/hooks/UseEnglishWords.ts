@@ -1,22 +1,26 @@
 
 import { useFetchAPI } from './UseFetchAPI';
 import axios from '../../../node_modules/axios/index';
+import EnglishWord from '../models/EnglishWord';
 
 export const useEnglishWords = () => {
     const { fetchAPI } = useFetchAPI();
 
-    const fetchEnglishWords = async () => {
+    const fetchEnglishWords = async (setEnglishWords: (englishWords: EnglishWord[]) => void) => {
         const result: Object[] = await fetchAPI('http://localhost:53000/english_words/all');
-        return result;
+        const englishWords: EnglishWord[] = result.map((result) => {
+            return EnglishWord.fromJson(result);
+        });
+        setEnglishWords(englishWords);
     }
 
-    const createEnglishWords = async (englishWords: string[]) => {
-        axios.post('http://localhost:53000/english_words', {
+    const createEnglishWords = async (englishWords: string[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
+        const result = await axios.post('http://localhost:53000/english_words', {
             words: englishWords
-        })
-            .then((response) => {
-                console.log(response);
-            });
+        });
+        if (result.status === 200) {
+            fetchEnglishWords(setEnglishWords);
+        }
     }
 
     const searchEnglishWords = async (

@@ -16,24 +16,25 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchEnglishWordsFlagState } from '../atoms/SearchEnglishWordsFlag';
+import { englishWordsState, englishWordsTitleListState } from '../atoms/EnglishWords';
+import { useEnglishWords } from '../hooks/UseEnglishWords';
 
 type Props = {
     searchEnglishWords: (keyword: string, situation: Situation | '', conversationStyle: ConversationStyle | '', difficulty: Difficulty | '') => Promise<Object>,
     setSearchResultEnglishWords: React.Dispatch<React.SetStateAction<string[]>>,
     searchResultEnglishWords: string[],
-    checkedResultEnglishWords: string[],
-    setCheckedResultEnglishWords: React.Dispatch<React.SetStateAction<string[]>>,
-    createEnglishWords: (checkedResultEnglishWords: string[]) => void,
 };
 
-export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, searchResultEnglishWords, checkedResultEnglishWords, setCheckedResultEnglishWords, createEnglishWords }: Props) => {
+export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, searchResultEnglishWords }: Props) => {
     const [keyword, setKeyword] = useState<string>('');
     const [situation, setSituation] = useState<Situation | ''>('');
     const [conversationStyle, setConversationStyle] = useState<ConversationStyle | ''>('');
     const [difficulty, setDifficulty] = useState<Difficulty | ''>('');
     const [searchEnglishWordsFlag, setSearchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
+    const [_, setEnglishWords] = useRecoilState(englishWordsState)
+    const { createEnglishWords } = useEnglishWords();
 
     const disableSearch = () => {
         return searchEnglishWordsFlag || searchResultEnglishWords.length > 0;
@@ -52,23 +53,6 @@ export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, se
             setSearchEnglishWordsFlag(false);
         }
     };
-
-    const handleToggle = (value: string) => () => {
-        const currentIndex = checkedResultEnglishWords.indexOf(value);
-        const newChecked = [...checkedResultEnglishWords];
-        // 既にチェックされている場合はチェックを外し、チェックされていない場合はチェックを入れる
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-        setCheckedResultEnglishWords(newChecked);
-    };
-
-    const handleClearSearchEnglishWordsResult = () => {
-        setSearchResultEnglishWords([]);
-        setCheckedResultEnglishWords([]);
-    }
 
     return (
         <Box sx={{ marginTop: "16px", padding: "16px", border: "1px solid #e0e0e0", display: "flex", flexDirection: "column" }}>
@@ -128,59 +112,110 @@ export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, se
                 検索
             </Button>
 
-            {searchResultEnglishWords.length > 0 ?
-                <Box>
-                    <List>
-                        {searchResultEnglishWords.map((word: string) => {
-                            const labelId = `checkbox-list-label-${word}`;
-
-                            return (
-                                <ListItemButton role={undefined} onClick={handleToggle(word)} dense
-                                    sx={{
-                                        borderBottom: "0.5px solid #e0e0e0",
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <Checkbox
-                                            edge="start"
-                                            checked={checkedResultEnglishWords.indexOf(word) !== -1}
-                                            tabIndex={-1}
-                                            disableRipple
-                                            inputProps={{ 'aria-labelledby': labelId }} />
-                                    </ListItemIcon>
-                                    <ListItemText id={labelId} primary={word} />
-                                </ListItemButton>
-                            );
-                        })}
-                    </List>
-                    <Box
-                        sx={{ padding: "0", margin: "0", display: "flex", flexDirection: "row" }}
-                    >
-                        <Button
-                            variant="contained"
-                            sx={{
-                                width: "30%", backgroundColor: "#e0e0e0", color: "#000000", ":hover": {
-                                    backgroundColor: "#b0b0b0",
-                                }
-                            }}
-                            onClick={() => handleClearSearchEnglishWordsResult()}
-                        >
-                            クリア
-                        </Button>
-
-                        <Box sx={{ width: "16px" }} />
-
-                        <Button
-                            variant="contained"
-                            sx={{ width: "70%" }}
-                            onClick={() => createEnglishWords(checkedResultEnglishWords)}
-                        >
-                            追加
-                        </Button>
-                    </Box>
-                </Box>
+            {searchResultEnglishWords.length > 0
+                ? <SearchResultBox
+                    searchResultEnglishWords={searchResultEnglishWords}
+                    createEnglishWords={createEnglishWords}
+                    setEnglishWords={setEnglishWords}
+                    setSearchResultEnglishWords={setSearchResultEnglishWords}
+                />
                 : <></>}
         </Box>
     );
 };
+
+const SearchResultBox = ({
+    searchResultEnglishWords,
+    createEnglishWords,
+    setEnglishWords,
+    setSearchResultEnglishWords
+}) => {
+    const englishWordsTitleList = useRecoilValue(englishWordsTitleListState);
+    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<string[]>([]);
+
+    const isAlreadyAddedWord = (word: string) => {
+        return englishWordsTitleList.includes(word);
+    }
+
+    const handleToggle = (value: string) => () => {
+        const currentIndex = checkedResultEnglishWords.indexOf(value);
+        const newChecked = [...checkedResultEnglishWords];
+        // 既にチェックされている場合はチェックを外し、チェックされていない場合はチェックを入れる
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
+        }
+        setCheckedResultEnglishWords(newChecked);
+    };
+
+    const handleCreateEnglishWords = async () => {
+        try {
+            createEnglishWords(checkedResultEnglishWords, setEnglishWords)
+            setCheckedResultEnglishWords([])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleClearSearchEnglishWordsResult = () => {
+        setSearchResultEnglishWords([]);
+        setCheckedResultEnglishWords([]);
+    }
+
+    return (
+        <Box>
+            <List>
+                {searchResultEnglishWords.map((word: string) => {
+                    const labelId = `checkbox-list-label-${word}`;
+
+                    return (
+                        <ListItemButton
+                            disabled={isAlreadyAddedWord(word)}
+                            role={undefined} onClick={handleToggle(word)} dense
+                            sx={{
+                                borderBottom: "0.5px solid #e0e0e0",
+                            }}
+                        >
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge="start"
+                                    checked={checkedResultEnglishWords.indexOf(word) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{ 'aria-labelledby': labelId }} />
+                            </ListItemIcon>
+                            <ListItemText id={labelId} primary={word} />
+                        </ListItemButton>
+                    );
+                })}
+            </List>
+            <Box
+                sx={{ padding: "0", margin: "0", display: "flex", flexDirection: "row" }}
+            >
+                <Button
+                    variant="contained"
+                    sx={{
+                        width: "30%", backgroundColor: "#e0e0e0", color: "#000000", ":hover": {
+                            backgroundColor: "#b0b0b0",
+                        }
+                    }}
+                    onClick={() => handleClearSearchEnglishWordsResult()}
+                >
+                    クリア
+                </Button>
+
+                <Box sx={{ width: "16px" }} />
+
+                <Button
+                    variant="contained"
+                    sx={{ width: "70%" }}
+                    onClick={() => { handleCreateEnglishWords() }}
+                >
+                    追加
+                </Button>
+            </Box>
+        </Box>
+    )
+}
 

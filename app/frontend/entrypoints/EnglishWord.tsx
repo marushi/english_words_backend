@@ -1,7 +1,6 @@
 import '../src/index.css';
 import { AppLayout } from '../components/AppLayout';
 import React, { useEffect, useState } from 'react';
-import EnglishWord from '../models/EnglishWord';
 import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useEnglishWords } from '../hooks/UseEnglishWords';
 import { SearchForm } from '../components/SearchForm';
@@ -10,24 +9,19 @@ import { EnglishWordsList } from '../components/EnglishWordsList';
 import { searchEnglishWordsFlagState } from '../atoms/SearchEnglishWordsFlag';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { SearchCircularProgress } from '../components/SearchCircularProgress';
+import { englishWordsState } from '../atoms/EnglishWords';
 
 const toggleLabels = ["英語リスト", "英語検索"];
 
 const App = () => {
-    const [englishWords, setEnglishWords] = useState<EnglishWord[]>([]);
+    const [_, setEnglishWords] = useRecoilState(englishWordsState)
     const [selectedToggle, setSelectedToggle] = useState<string>(toggleLabels[0]);
     const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<string[]>([]);
-    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<string[]>([]);
-    const [searchEnglishWordsFlag, setSearchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
+    const [searchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
 
-    const { fetchEnglishWords, searchEnglishWords, createEnglishWords } = useEnglishWords();
+    const { fetchEnglishWords, searchEnglishWords } = useEnglishWords();
     useEffect(() => {
-        fetchEnglishWords().then((results) => {
-            const englishWords: EnglishWord[] = results.map((result) => {
-                return EnglishWord.fromJson(result);
-            });
-            setEnglishWords(englishWords);
-        });
+        fetchEnglishWords(setEnglishWords);
     }, []);
 
     return (
@@ -45,14 +39,12 @@ const App = () => {
                     })}
                 </ToggleButtonGroup>
                 {selectedToggle === toggleLabels[0]
-                    ? (<EnglishWordsList englishWords={englishWords} />)
+                    ? (<EnglishWordsList />)
                     : (<SearchForm
                         searchEnglishWords={searchEnglishWords}
                         setSearchResultEnglishWords={setSearchResultEnglishWords}
                         searchResultEnglishWords={searchResultEnglishWords}
-                        checkedResultEnglishWords={checkedResultEnglishWords}
-                        setCheckedResultEnglishWords={setCheckedResultEnglishWords}
-                        createEnglishWords={createEnglishWords} />)}
+                    />)}
                 {
                     searchEnglishWordsFlag
                         ? <SearchCircularProgress />

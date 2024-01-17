@@ -1,13 +1,13 @@
 import { List, ListItemButton, ListItemText } from "@mui/material";
 import EnglishWord from "../models/EnglishWord";
 import React from "react";
+import { useRecoilValue } from "recoil";
+import { englishWordsState } from "../atoms/EnglishWords";
 
 
-type Props = {
-    englishWords: EnglishWord[],
-};
+export const EnglishWordsList: React.FC = () => {
+    const englishWords = useRecoilValue(englishWordsState)
 
-export const EnglishWordsList: React.FC<Props> = ({ englishWords }: Props) => {
     return (
         <List>
             {englishWords.map((englishWord: EnglishWord) => {
