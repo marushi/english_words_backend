@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
 
   def authenticate_request
     cognito_uuid = session[:cognito_uuid]
-    @current_user = User.find_by(cognito_uuid:)
+    @current_user = User.find_by!(cognito_uuid:)
     @current_user.verify_access_expiration!
   rescue User::AccessTokenExpiredError
     begin
