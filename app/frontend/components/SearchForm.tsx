@@ -24,7 +24,7 @@ import { useEnglishWords } from '../hooks/UseEnglishWords';
 type Props = {
     searchEnglishWords: (keyword: string, situation: Situation | '', conversationStyle: ConversationStyle | '', difficulty: Difficulty | '') => Promise<Object>,
     setSearchResultEnglishWords: React.Dispatch<React.SetStateAction<string[]>>,
-    searchResultEnglishWords: string[],
+    searchResultEnglishWords: Object[],
 };
 
 export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, searchResultEnglishWords }: Props) => {
@@ -46,7 +46,7 @@ export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, se
         setSearchEnglishWordsFlag(true);
         try {
             const result: Object = await searchEnglishWords(keyword, situation, conversationStyle, difficulty);
-            setSearchResultEnglishWords(result["english_vocabulary_list"].filter((word: string) => word !== ""));
+            setSearchResultEnglishWords(result["english_vocabulary_list"]);
         } catch (error) {
             console.log(error);
         } finally {
@@ -131,13 +131,13 @@ const SearchResultBox = ({
     setSearchResultEnglishWords
 }) => {
     const englishWordsTitleList = useRecoilValue(englishWordsTitleListState);
-    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<string[]>([]);
+    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<Object[]>([]);
 
     const isAlreadyAddedWord = (word: string) => {
         return englishWordsTitleList.includes(word);
     }
 
-    const handleToggle = (value: string) => () => {
+    const handleToggle = (value: Object) => () => {
         const currentIndex = checkedResultEnglishWords.indexOf(value);
         const newChecked = [...checkedResultEnglishWords];
         // 既にチェックされている場合はチェックを外し、チェックされていない場合はチェックを入れる
@@ -166,13 +166,14 @@ const SearchResultBox = ({
     return (
         <Box>
             <List>
-                {searchResultEnglishWords.map((word: string) => {
+                {searchResultEnglishWords.map((value: Object) => {
+                    const word: string = value["word"]
                     const labelId = `checkbox-list-label-${word}`;
 
                     return (
                         <ListItemButton
                             disabled={isAlreadyAddedWord(word)}
-                            role={undefined} onClick={handleToggle(word)} dense
+                            role={undefined} onClick={handleToggle(value)} dense
                             sx={{
                                 borderBottom: "0.5px solid #e0e0e0",
                             }}
@@ -180,7 +181,7 @@ const SearchResultBox = ({
                             <ListItemIcon>
                                 <Checkbox
                                     edge="start"
-                                    checked={checkedResultEnglishWords.indexOf(word) !== -1}
+                                    checked={checkedResultEnglishWords.indexOf(value) !== -1}
                                     tabIndex={-1}
                                     disableRipple
                                     inputProps={{ 'aria-labelledby': labelId }} />

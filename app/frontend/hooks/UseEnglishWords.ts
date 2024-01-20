@@ -14,9 +14,9 @@ export const useEnglishWords = () => {
         setEnglishWords(englishWords);
     }
 
-    const createEnglishWords = async (englishWords: string[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
+    const createEnglishWords = async (englishWords: Object[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
         const result = await axios.post('http://localhost:53000/english_words', {
-            words: englishWords
+            english_words: englishWords
         });
         if (result.status === 200) {
             fetchEnglishWords(setEnglishWords);
@@ -37,6 +37,9 @@ export const useEnglishWords = () => {
                 "difficulty": difficulty,
                 "type": "単語"
             })
+
+        console.log("this is result data")
+        console.log(result.data)
 
         return result.data;
     }

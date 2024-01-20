@@ -16,7 +16,7 @@ const toggleLabels = ["英語リスト", "英語検索"];
 const App = () => {
     const [_, setEnglishWords] = useRecoilState(englishWordsState)
     const [selectedToggle, setSelectedToggle] = useState<string>(toggleLabels[0]);
-    const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<string[]>([]);
+    const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<Object[]>([]);
     const [searchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
 
     const { fetchEnglishWords, searchEnglishWords } = useEnglishWords();

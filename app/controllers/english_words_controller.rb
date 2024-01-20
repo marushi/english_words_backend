@@ -1,4 +1,5 @@
 class EnglishWordsController < ApplicationController
+
   def all
     render json: EnglishWord.where(user_id: current_user.id)
   end
@@ -6,8 +7,18 @@ class EnglishWordsController < ApplicationController
   def index; end
   def create
     ActiveRecord::Base.transaction do
-      params[:words].each do |word|
-        EnglishWord.create!(word:, user_id: current_user.id)
+      set_params!
+
+      @params.each do |value|
+        EnglishWord.create!(
+          word: value[:word],
+          word_japanese: value[:word_japanese],
+          phonetic_symbol: value[:phonetic_symbol],
+          synonym: value[:synonym],
+          synonym_japanese: value[:synonym_japanese],
+          example_sentence: value[:example_sentence],
+          user_id: current_user.id
+        )
       end
       render json: { status: 'ok' }, status: :ok
     rescue StandardError => e
@@ -24,4 +35,11 @@ class EnglishWordsController < ApplicationController
     end
   end
 
+  private
+
+  def set_params!
+    @params = params.require(:english_words).map do |english_word_params|
+      english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, example_sentence: [])
+    end
+  end
 end

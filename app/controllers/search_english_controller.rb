@@ -12,64 +12,60 @@ class SearchEnglishController < ApplicationController
     chat_gpt_result = call_chat_gpt(keyword, situation, style, difficulty, type)
     arguments_str = chat_gpt_result['choices'][0]['message']['function_call']['arguments']
     arguments_dict = JSON.parse(arguments_str)
+    english_vocabulary_list = arguments_dict.map { |_, value| value }
 
-    english_vocabulary_list = [
-      arguments_dict['1_en'],
-      arguments_dict['2_en'],
-      arguments_dict['3_en'],
-      arguments_dict['4_en'],
-      arguments_dict['5_en'],
-      arguments_dict['6_en'],
-      arguments_dict['7_en']
-    ]
-    japanese_vocabulary_list = [
-      arguments_dict['1_ja'],
-      arguments_dict['2_ja'],
-      arguments_dict['3_ja'],
-      arguments_dict['4_ja'],
-      arguments_dict['5_ja'],
-      arguments_dict['6_ja'],
-      arguments_dict['7_ja']
-    ]
 
-    render json: {
-      english_vocabulary_list:,
-      japanese_vocabulary_list:
-    }, status: :created
+    render json: { english_vocabulary_list: }, status: :created
   end
 
   private
 
   def call_chat_gpt(keyword, situation, style, difficulty, type)
-    functions = [
-      {
-        'name' => 'search_english_vocabulary',
-        'description' => "ユーザーから送られたキーワードと条件に合致する#{type}を10個返す",
-        'parameters' => {
-          'type' => 'object',
-          'properties' => {
-            '1_en' => { 'type' => 'string', 'description' => "#{type}1" },
-            '1_ja' => { 'type' => 'string', 'description' => "#{type}1の日本語" },
-            '2_en' => { 'type' => 'string', 'description' => "#{type}2" },
-            '2_ja' => { 'type' => 'string', 'description' => "#{type}2の日本語" },
-            '3_en' => { 'type' => 'string', 'description' => "#{type}3" },
-            '3_ja' => { 'type' => 'string', 'description' => "#{type}3の日本語" },
-            '4_en' => { 'type' => 'string', 'description' => "#{type}4" },
-            '4_ja' => { 'type' => 'string', 'description' => "#{type}4の日本語" },
-            '5_en' => { 'type' => 'string', 'description' => "#{type}5" },
-            '5_ja' => { 'type' => 'string', 'description' => "#{type}5の日本語" },
-            '6_en' => { 'type' => 'string', 'description' => "#{type}6" },
-            '6_ja' => { 'type' => 'string', 'description' => "#{type}6の日本語" },
-            '7_en' => { 'type' => 'string', 'description' => "#{type}7" },
-            '7_ja' => { 'type' => 'string', 'description' => "#{type}7の日本語" }
+
+    property_common = {
+      'type' => 'object',
+      'properties' => {
+        'example_sentence' => {
+          'type' => 'array',
+          'items' => {
+            'type' => 'object',
+            'properties' => {
+              'sentence' => { 'type' => 'string', 'not_null' => true },
+              'sentence_japanese' => { 'type' => 'string', 'not_null' => true }
+            },
+            'not_null' => true
           },
-          'required' => %w[
-            1_en 1_ja 2_en 2_ja 3_en 3_ja 4_en 4_ja
-            5_en 5_ja 6_en 6_ja 7_en 7_ja
-          ]
-        }
+          'not_null' => true
+        },
+        'phonetic_symbol' => { 'type' => 'string', 'default' => '', 'not_null' => true },
+        'synonym' => { 'type' => 'string', 'default' => '', 'not_null' => true },
+        'synonym_japanese' => { 'type' => 'string', 'default' => '', 'not_null' => true },
+        'word' => { 'type' => 'string', 'not_null' => true },
+        'word_japanese' => { 'type' => 'string', 'default' => '', 'not_null' => true }
       }
-    ]
+    }
+
+functions = [
+  {
+    'name' => 'search_english_vocabulary',
+    'description' => "ユーザーから送られたキーワードと条件に合致する#{type}を7個返す",
+    'parameters' => {
+      'type' => 'object',
+      'properties' => {
+        '1' => property_common.merge('description' => "#{type}1"),
+        '2' => property_common.merge('description' => "#{type}2"),
+        '3' => property_common.merge('description' => "#{type}3"),
+        '4' => property_common.merge('description' => "#{type}4"),
+        '5' => property_common.merge('description' => "#{type}5"),
+        '6' => property_common.merge('description' => "#{type}6"),
+        '7' => property_common.merge('description' => "#{type}7"),
+      },
+      'required' => %w[1 2 3 4 5 6 7]
+    }
+  }
+]
+
+
 
     access_token = ENV.fetch('OPENAI_API_KEY')
     ::OpenAI::Client.new(access_token:).chat(
@@ -91,7 +87,7 @@ class SearchEnglishController < ApplicationController
         function_call: { 'name' => 'search_english_vocabulary' }
       }
     )
-
-
+  rescue StandardError => e
+    Rails.logger.error(e)
   end
 end
