@@ -1,7 +1,7 @@
 import '../src/index.css';
 import { AppLayout } from '../components/AppLayout';
 import React, { useEffect, useState } from 'react';
-import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useEnglishWords } from '../hooks/UseEnglishWords';
 import { SearchForm } from '../components/SearchForm';
 import ReactDOM from 'react-dom';
@@ -27,17 +27,7 @@ const App = () => {
     return (
         <React.StrictMode>
             <AppLayout>
-                <ToggleButtonGroup
-                    color="primary"
-                    value={selectedToggle}
-                    exclusive
-                >
-                    {toggleLabels.map((toggleLabel) => {
-                        return <ToggleButton value={toggleLabel} aria-label={toggleLabel} onClick={() => setSelectedToggle(toggleLabel)} sx={{ paddingX: "16px", paddingY: "8px" }}>
-                            <Typography variant="button" >{toggleLabel}</Typography>
-                        </ToggleButton>
-                    })}
-                </ToggleButtonGroup>
+                {header({ selectedToggle, setSelectedToggle })}
                 {selectedToggle === toggleLabels[0]
                     ? (<EnglishWordsList />)
                     : (<SearchForm
@@ -54,6 +44,24 @@ const App = () => {
         </React.StrictMode >
     );
 };
+
+const header = ({ selectedToggle, setSelectedToggle }) => {
+    return (
+        <Box sx={{ padding: "0", margin: "0" }}>
+            <ToggleButtonGroup
+                color="primary"
+                value={selectedToggle}
+                exclusive
+            >
+                {toggleLabels.map((toggleLabel) => {
+                    return <ToggleButton value={toggleLabel} aria-label={toggleLabel} onClick={() => setSelectedToggle(toggleLabel)} sx={{ paddingX: "16px", paddingY: "8px" }}>
+                        <Typography variant="button" >{toggleLabel}</Typography>
+                    </ToggleButton>
+                })}
+            </ToggleButtonGroup>
+        </Box>
+    )
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <RecoilRoot>
