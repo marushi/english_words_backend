@@ -140,7 +140,6 @@ const SearchResultBox = ({
     const handleToggle = (value: Object) => () => {
         const currentIndex = checkedResultEnglishWords.indexOf(value);
         const newChecked = [...checkedResultEnglishWords];
-        // 既にチェックされている場合はチェックを外し、チェックされていない場合はチェックを入れる
         if (currentIndex === -1) {
             newChecked.push(value);
         } else {
