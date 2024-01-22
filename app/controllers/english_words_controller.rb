@@ -7,7 +7,7 @@ class EnglishWordsController < ApplicationController
   def index; end
   def create
     ActiveRecord::Base.transaction do
-      set_params!
+      set_create_params!
 
       @params.each do |value|
         EnglishWord.create!(
@@ -35,11 +35,28 @@ class EnglishWordsController < ApplicationController
     end
   end
 
+  def destroy
+    ActiveRecord::Base.transaction do
+      set_destroy_params!
+
+      EnglishWord.where(user_id: current_user.id).where(id: @params.map { |value| value[:id] }).destroy_all()
+      render json: { status: 'ok' }, status: :ok
+    rescue StandardError => e
+      render json: { errors: e.message}, status: :unprocessable_entity
+    end
+  end
+
   private
 
-  def set_params!
+  def set_create_params!
     @params = params.require(:english_words).map do |english_word_params|
       english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, example_sentence: [])
+    end
+  end
+
+  def set_destroy_params!
+    @params = params.require(:english_words).map do |english_word_params|
+      english_word_params.permit(:id)
     end
   end
 end

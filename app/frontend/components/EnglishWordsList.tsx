@@ -17,15 +17,17 @@ import {
     englishWordsCountPerPageState,
     englishWordsPageState,
     englishWordsPerPageState,
+    englishWordsState,
     maxEnglishWordsPageState,
 } from "../atoms/EnglishWords";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { editEnglishWordsFlagState } from "../atoms/EditENglishWordsFlag";
+import { editEnglishWordsFlagState } from "../atoms/EditEnglishWordsFlag";
 import { EnglishWordsListEditAnimation } from "./EnglishWordsListEditAnimation";
+import { EnglishWordsDelete } from "./EnglishWordsDelete";
+import { useEnglishWords } from "../hooks/UseEnglishWords";
 
 
 export const EnglishWordsList: React.FC = () => {
@@ -35,6 +37,7 @@ export const EnglishWordsList: React.FC = () => {
     const maxEnglishWordsPage = useRecoilValue(maxEnglishWordsPageState)
     const [editEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
     const [checkedEnglishWords, setCheckedEnglishWords] = useState<EnglishWord[]>([]);
+    const [_, setEnglishWords] = useRecoilState(englishWordsState)
 
     const handleToggle = (value: EnglishWord) => () => {
         const currentIndex = checkedEnglishWords.indexOf(value);
@@ -49,7 +52,7 @@ export const EnglishWordsList: React.FC = () => {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {actionButtons({ setCheckedEnglishWords })}
+            {actionButtons({ setCheckedEnglishWords, checkedEnglishWords, setEnglishWords })}
             <List sx={{ width: "100%" }} >
                 {englishWordsPerPage.map((englishWord: EnglishWord) => {
                     const labelId = `checkbox-list-label-${englishWord.id}`;
@@ -65,9 +68,7 @@ export const EnglishWordsList: React.FC = () => {
                         >
                             {checkBox({ editEnglishWordsFlag, checkedEnglishWords, englishWord, labelId })}
                             <ListItemText id={labelId} primary={englishWord.word} />
-                            <EnglishWordsListEditAnimation
-                                editEnglishWordsFlag={!editEnglishWordsFlag}
-                            >
+                            <EnglishWordsListEditAnimation editEnglishWordsFlag={!editEnglishWordsFlag} >
                                 <ChevronRightIcon sx={{ color: "#c0c0c0" }} />
                             </EnglishWordsListEditAnimation>
                         </ListItemButton>
@@ -81,8 +82,7 @@ export const EnglishWordsList: React.FC = () => {
                 value={englishWordsCountPerPage}
                 onChange={(e) => {
                     setEnglishWordsCountPerPage(Number(e.target.value))
-                }
-                }
+                }}
                 inputProps={{
                     name: 'maxEnglishWordsPage',
                     id: 'maxEnglishWordsPage',
@@ -119,22 +119,24 @@ const checkBox = ({ editEnglishWordsFlag, checkedEnglishWords, englishWord, labe
     </EnglishWordsListEditAnimation>
 }
 
-const actionButtons = ({ setCheckedEnglishWords }) => {
+const actionButtons = ({ setCheckedEnglishWords, checkedEnglishWords, setEnglishWords }) => {
     const [editEnglishWordsFlag, setEditEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
+    const { deleteEnglishWords } = useEnglishWords();
 
     const handleEditEnglishWords = () => {
         setEditEnglishWordsFlag(!editEnglishWordsFlag)
         setCheckedEnglishWords([])
     }
+
+    const handleDeleteEnglishWords = () => {
+        deleteEnglishWords(checkedEnglishWords, setEnglishWords)
+    }
+
     return (
         <Box sx={{ display: "flex", width: "100%" }} >
             <Box sx={{ ml: "auto", mr: "12px", display: "flex", flexDirection: "row" }}>
-                <EnglishWordsListEditAnimation
-                    editEnglishWordsFlag={editEnglishWordsFlag}
-                >
-                    <IconButton >
-                        <DeleteIcon sx={{ color: "red" }} />
-                    </IconButton>
+                <EnglishWordsListEditAnimation editEnglishWordsFlag={editEnglishWordsFlag}>
+                    <EnglishWordsDelete editEnglishWordsFlag={editEnglishWordsFlag} deleteEnglishWords={handleDeleteEnglishWords} />
                 </EnglishWordsListEditAnimation>
                 <IconButton >
                     <EditIcon sx={{ color: "#c0c0c0" }} onClick={() => { handleEditEnglishWords() }} />

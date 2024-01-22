@@ -23,6 +23,17 @@ export const useEnglishWords = () => {
         }
     }
 
+    const deleteEnglishWords = async (englishWords: EnglishWord[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
+        const result = await axios.delete('http://localhost:53000/english_words/destroy', {
+            data: {
+                english_words: englishWords.map((englishWord) => { return { id: englishWord.id } })
+            }
+        });
+        if (result.status === 200) {
+            fetchEnglishWords(setEnglishWords);
+        }
+    }
+
     const searchEnglishWords = async (
         keyword: string,
         situation: string,
@@ -45,5 +56,5 @@ export const useEnglishWords = () => {
     }
 
 
-    return { fetchEnglishWords, createEnglishWords, searchEnglishWords }
+    return { fetchEnglishWords, createEnglishWords, searchEnglishWords, deleteEnglishWords };
 }
