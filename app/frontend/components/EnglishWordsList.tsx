@@ -25,6 +25,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { editEnglishWordsFlagState } from "../atoms/EditENglishWordsFlag";
+import { EnglishWordsListEditAnimation } from "./EnglishWordsListEditAnimation";
 
 
 export const EnglishWordsList: React.FC = () => {
@@ -62,22 +63,13 @@ export const EnglishWordsList: React.FC = () => {
                                 borderBottom: "0.5px solid #e0e0e0",
                             }}
                         >
-                            {editEnglishWordsFlag
-                                ? <ListItemIcon>
-                                    <Checkbox
-                                        size="small"
-                                        edge="start"
-                                        checked={checkedEnglishWords.indexOf(englishWord) !== -1}
-                                        tabIndex={-1}
-                                        disableRipple
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                        sx={{ height: "18px" }}
-                                    />
-                                </ListItemIcon>
-                                : <></>
-                            }
+                            {checkBox({ editEnglishWordsFlag, checkedEnglishWords, englishWord, labelId })}
                             <ListItemText id={labelId} primary={englishWord.word} />
-                            <ChevronRightIcon sx={{ color: "#c0c0c0" }} />
+                            <EnglishWordsListEditAnimation
+                                editEnglishWordsFlag={!editEnglishWordsFlag}
+                            >
+                                <ChevronRightIcon sx={{ color: "#c0c0c0" }} />
+                            </EnglishWordsListEditAnimation>
                         </ListItemButton>
                     );
                 })}
@@ -109,6 +101,24 @@ export const EnglishWordsList: React.FC = () => {
     )
 }
 
+const checkBox = ({ editEnglishWordsFlag, checkedEnglishWords, englishWord, labelId }) => {
+    return <EnglishWordsListEditAnimation
+        editEnglishWordsFlag={editEnglishWordsFlag}
+    >
+        <ListItemIcon>
+            <Checkbox
+                size="small"
+                edge="start"
+                checked={checkedEnglishWords.indexOf(englishWord) !== -1}
+                tabIndex={-1}
+                disableRipple
+                inputProps={{ 'aria-labelledby': labelId }}
+                sx={{ height: "18px" }}
+            />
+        </ListItemIcon>
+    </EnglishWordsListEditAnimation>
+}
+
 const actionButtons = ({ setCheckedEnglishWords }) => {
     const [editEnglishWordsFlag, setEditEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
 
@@ -118,14 +128,15 @@ const actionButtons = ({ setCheckedEnglishWords }) => {
     }
     return (
         <Box sx={{ display: "flex", width: "100%" }} >
-            <Box sx={{ ml: "auto", mr: "12px" }} >
-                {editEnglishWordsFlag
-                    ? <IconButton size="small">
+            <Box sx={{ ml: "auto", mr: "12px", display: "flex", flexDirection: "row" }}>
+                <EnglishWordsListEditAnimation
+                    editEnglishWordsFlag={editEnglishWordsFlag}
+                >
+                    <IconButton >
                         <DeleteIcon sx={{ color: "red" }} />
                     </IconButton>
-                    : <></>
-                }
-                <IconButton size="small">
+                </EnglishWordsListEditAnimation>
+                <IconButton >
                     <EditIcon sx={{ color: "#c0c0c0" }} onClick={() => { handleEditEnglishWords() }} />
                 </IconButton>
                 <IconButton>
