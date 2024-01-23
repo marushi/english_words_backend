@@ -4,12 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useEnglishWords } from '../hooks/UseEnglishWords';
 import { SearchForm } from '../components/SearchForm';
-import ReactDOM from 'react-dom';
 import { EnglishWordsList } from '../components/EnglishWordsList';
 import { searchEnglishWordsFlagState } from '../atoms/SearchEnglishWordsFlag';
 import { RecoilRoot, useRecoilState } from 'recoil';
 import { SearchCircularProgress } from '../components/SearchCircularProgress';
 import { englishWordsState } from '../atoms/EnglishWords';
+import ReactDOM from 'react-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import EnglishWordDetail from './EnglishWordDetail';
+import { NotFoundPage } from './NotFoundPage';
 
 const toggleLabels = ["英語リスト", "英語検索"];
 
@@ -19,28 +22,31 @@ const App = () => {
     const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<Object[]>([]);
     const [searchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
 
-    const { fetchEnglishWords, searchEnglishWords } = useEnglishWords();
+    const { fetchEnglishWordList, searchEnglishWords } = useEnglishWords();
     useEffect(() => {
-        fetchEnglishWords(setEnglishWords);
+        fetchEnglishWordList(setEnglishWords);
     }, []);
 
     return (
         <React.StrictMode>
-            <AppLayout>
-                {header({ selectedToggle, setSelectedToggle })}
-                {selectedToggle === toggleLabels[0]
-                    ? (<EnglishWordsList />)
-                    : (<SearchForm
-                        searchEnglishWords={searchEnglishWords}
-                        setSearchResultEnglishWords={setSearchResultEnglishWords}
-                        searchResultEnglishWords={searchResultEnglishWords}
-                    />)}
-                {
-                    searchEnglishWordsFlag
-                        ? <SearchCircularProgress />
-                        : <></>
+            <AppLayout
+                header={header({ selectedToggle, setSelectedToggle })}
+                children={
+                    <>
+                        {selectedToggle === toggleLabels[0]
+                            ? (<EnglishWordsList />)
+                            : (<SearchForm
+                                searchEnglishWords={searchEnglishWords}
+                                setSearchResultEnglishWords={setSearchResultEnglishWords}
+                                searchResultEnglishWords={searchResultEnglishWords}
+                            />)}
+                        {
+                            searchEnglishWordsFlag
+                                ? <SearchCircularProgress />
+                                : <></>
+                        }</>
                 }
-            </AppLayout>
+            />
         </React.StrictMode >
     );
 };
@@ -63,8 +69,14 @@ const header = ({ selectedToggle, setSelectedToggle }) => {
     )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
     <RecoilRoot>
-        <App />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/english_words" element={<App />} />
+                <Route path="/english_words/:id" element={<EnglishWordDetail />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+        </BrowserRouter>
     </RecoilRoot>
 );

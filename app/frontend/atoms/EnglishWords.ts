@@ -16,6 +16,11 @@ export const englishWordsCountPerPageState = atom({
     default: 10,
 });
 
+export const selectedEnglishWordState = atom({
+    key: 'selectedEnglishWordState',
+    default: undefined as EnglishWord | undefined,
+});
+
 export const englishWordsPerPageState = selector({
     key: 'englishWordsPerPageState',
     get: ({ get }) => {

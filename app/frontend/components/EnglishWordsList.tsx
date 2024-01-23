@@ -19,6 +19,7 @@ import {
     englishWordsPerPageState,
     englishWordsState,
     maxEnglishWordsPageState,
+    selectedEnglishWordState,
 } from "../atoms/EnglishWords";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EditIcon from '@mui/icons-material/Edit';
@@ -28,7 +29,12 @@ import { editEnglishWordsFlagState } from "../atoms/EditEnglishWordsFlag";
 import { EnglishWordsListEditAnimation } from "./EnglishWordsListEditAnimation";
 import { EnglishWordsDelete } from "./EnglishWordsDelete";
 import { useEnglishWords } from "../hooks/UseEnglishWords";
+import { useNavigate } from "react-router-dom";
 
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 export const EnglishWordsList: React.FC = () => {
     const [englishWordsPage, setEnglishWordsPage] = useRecoilState(englishWordsPageState)
@@ -37,9 +43,11 @@ export const EnglishWordsList: React.FC = () => {
     const maxEnglishWordsPage = useRecoilValue(maxEnglishWordsPageState)
     const [editEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
     const [checkedEnglishWords, setCheckedEnglishWords] = useState<EnglishWord[]>([]);
-    const [_, setEnglishWords] = useRecoilState(englishWordsState)
+    const [, setEnglishWords] = useRecoilState(englishWordsState)
+    const [, setSelectedEnglishWord] = useRecoilState(selectedEnglishWordState)
+    const navigate = useNavigate();
 
-    const handleToggle = (value: EnglishWord) => () => {
+    const handleToggle = (value: EnglishWord) => {
         const currentIndex = checkedEnglishWords.indexOf(value);
         const newChecked = [...checkedEnglishWords];
         if (currentIndex === -1) {
@@ -49,6 +57,15 @@ export const EnglishWordsList: React.FC = () => {
         }
         setCheckedEnglishWords(newChecked);
     };
+
+    const handleTapEnglishWord = (englishWord: EnglishWord) => {
+        if (editEnglishWordsFlag) {
+            handleToggle(englishWord)
+        } else {
+            setSelectedEnglishWord(englishWord)
+            navigate('/english_words/' + englishWord.id)
+        }
+    }
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -61,7 +78,7 @@ export const EnglishWordsList: React.FC = () => {
                         <ListItemButton
                             key={englishWord.id}
                             role={undefined}
-                            onClick={handleToggle(englishWord)}
+                            onClick={() => { handleTapEnglishWord(englishWord) }}
                             sx={{
                                 borderBottom: "0.5px solid #e0e0e0",
                             }}

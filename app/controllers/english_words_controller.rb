@@ -39,7 +39,7 @@ class EnglishWordsController < ApplicationController
     ActiveRecord::Base.transaction do
       set_destroy_params!
 
-      EnglishWord.where(user_id: current_user.id).where(id: @params.map { |value| value[:id] }).destroy_all()
+      EnglishWord.where(user_id: current_user.id).where(id: @params.pluck(:id)).destroy_all
       render json: { status: 'ok' }, status: :ok
     rescue StandardError => e
       render json: { errors: e.message}, status: :unprocessable_entity

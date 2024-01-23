@@ -40,6 +40,8 @@
 Rails.application.routes.draw do
   root 'home#index'
 
+  get '*path', to: 'english_words#index', constraints: ->(request){ request.format.html? }
+
   get 'authentication', to: 'authentication#index'
   get 'authentication/sign_in'
   get 'session/cognito_callback'

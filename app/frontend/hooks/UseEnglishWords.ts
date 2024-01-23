@@ -6,7 +6,7 @@ import EnglishWord from '../models/EnglishWord';
 export const useEnglishWords = () => {
     const { fetchAPI } = useFetchAPI();
 
-    const fetchEnglishWords = async (setEnglishWords: (englishWords: EnglishWord[]) => void) => {
+    const fetchEnglishWordList = async (setEnglishWords: (englishWords: EnglishWord[]) => void) => {
         const result: Object[] = await fetchAPI('http://localhost:53000/english_words/all');
         const englishWords: EnglishWord[] = result.map((result) => {
             return EnglishWord.fromJson(result);
@@ -19,7 +19,7 @@ export const useEnglishWords = () => {
             english_words: englishWords
         });
         if (result.status === 200) {
-            fetchEnglishWords(setEnglishWords);
+            fetchEnglishWordList(setEnglishWords);
         }
     }
 
@@ -30,7 +30,7 @@ export const useEnglishWords = () => {
             }
         });
         if (result.status === 200) {
-            fetchEnglishWords(setEnglishWords);
+            fetchEnglishWordList(setEnglishWords);
         }
     }
 
@@ -56,5 +56,5 @@ export const useEnglishWords = () => {
     }
 
 
-    return { fetchEnglishWords, createEnglishWords, searchEnglishWords, deleteEnglishWords };
+    return { fetchEnglishWordList, createEnglishWords, searchEnglishWords, deleteEnglishWords };
 }

@@ -7,12 +7,16 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-type Props = { children: ReactNode };
+type Props = {
+    header: ReactNode,
+    children: ReactNode,
+};
 
-export const AppLayout = ({ children }: Props) => {
+export const AppLayout = ({ header, children }: Props) => {
     return (
         <React.StrictMode>
             <Container maxWidth="sm">
+                {header}
                 {children}
             </Container>
         </React.StrictMode >
