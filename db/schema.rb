@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_18_235525) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_23_145932) do
   create_table "english_words", force: :cascade do |t|
     t.string "word", null: false
     t.datetime "learned_at"
@@ -22,6 +22,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_235525) do
     t.json "example_sentence", default: {}, null: false
     t.string "synonym", default: "", null: false
     t.string "synonym_japanese", default: "", null: false
+    t.string "description_and_origin", default: "", null: false
     t.index ["user_id"], name: "index_english_words_on_user_id"
   end
 

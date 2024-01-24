@@ -4,17 +4,18 @@
 #
 # Table name: english_words
 #
-#  id               :integer          not null, primary key
-#  example_sentence :json             not null
-#  learned_at       :datetime
-#  phonetic_symbol  :string           default(""), not null
-#  synonym          :string           default(""), not null
-#  synonym_japanese :string           default(""), not null
-#  word             :string           not null
-#  word_japanese    :string           default(""), not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  user_id          :integer
+#  id                     :integer          not null, primary key
+#  description_and_origin :string           default(""), not null
+#  example_sentence       :json             not null
+#  learned_at             :datetime
+#  phonetic_symbol        :string           default(""), not null
+#  synonym                :string           default(""), not null
+#  synonym_japanese       :string           default(""), not null
+#  word                   :string           not null
+#  word_japanese          :string           default(""), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  user_id                :integer
 #
 # Indexes
 #

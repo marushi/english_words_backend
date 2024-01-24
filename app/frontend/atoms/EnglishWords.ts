@@ -21,6 +21,11 @@ export const selectedEnglishWordState = atom({
     default: undefined as EnglishWord | undefined,
 });
 
+export const searchResultEnglishWordsState = atom({
+    key: 'searchResultEnglishWordsState',
+    default: [] as EnglishWord[],
+});
+
 export const englishWordsPerPageState = selector({
     key: 'englishWordsPerPageState',
     get: ({ get }) => {

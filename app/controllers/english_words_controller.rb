@@ -16,12 +16,14 @@ class EnglishWordsController < ApplicationController
           phonetic_symbol: value[:phonetic_symbol],
           synonym: value[:synonym],
           synonym_japanese: value[:synonym_japanese],
-          example_sentence: value[:example_sentence],
+          example_sentence: value[:example_sentence] || {},
+          description_and_origin: value[:description_and_origin],
           user_id: current_user.id
         )
       end
       render json: { status: 'ok' }, status: :ok
     rescue StandardError => e
+      Rails.logger.error(e.message)
       render json: { errors: e.message}, status: :unprocessable_entity
     end
   end
@@ -50,7 +52,8 @@ class EnglishWordsController < ApplicationController
 
   def set_create_params!
     @params = params.require(:english_words).map do |english_word_params|
-      english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, example_sentence: [])
+      english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, :description_and_origin,
+                                 example_sentence: [:sentence_1, :sentence_japanese_1, :sentence_2, :sentence_japanese_2, :sentence_3, :sentence_japanese_3])
     end
   end
 

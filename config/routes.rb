@@ -1,7 +1,8 @@
 # == Route Map
 #
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
-#                                     root GET    /                                                                                                 home#index
+#                                     root GET    /                                                                                                 english_words#index
+#                                          GET    /*path(.:format)                                                                                  english_words#index
 #                           authentication GET    /authentication(.:format)                                                                         authentication#index
 #                   authentication_sign_in GET    /authentication/sign_in(.:format)                                                                 authentication#sign_in
 #                 session_cognito_callback GET    /session/cognito_callback(.:format)                                                               session#cognito_callback
@@ -38,7 +39,7 @@
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
 
 Rails.application.routes.draw do
-  root 'home#index'
+  root 'english_words#index'
 
   get '*path', to: 'english_words#index', constraints: ->(request){ request.format.html? }
 

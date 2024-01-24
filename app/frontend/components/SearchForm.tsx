@@ -1,6 +1,6 @@
 import '../src/index.css';
 import React, { SetStateAction, useState } from 'react';
-import { ConversationStyle, Difficulty, Situation, VocabularyType } from '../models/EnglishWord';
+import EnglishWord, { ConversationStyle, Difficulty, Situation, VocabularyType } from '../models/EnglishWord';
 import {
     Box,
     Button,
@@ -18,23 +18,19 @@ import {
 } from '@mui/material';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchEnglishWordsFlagState } from '../atoms/SearchEnglishWordsFlag';
-import { englishWordsState, englishWordsTitleListState } from '../atoms/EnglishWords';
+import { englishWordsState, englishWordsTitleListState, searchResultEnglishWordsState } from '../atoms/EnglishWords';
 import { useEnglishWords } from '../hooks/UseEnglishWords';
 
-type Props = {
-    searchEnglishWords: (keyword: string, situation: Situation | '', conversationStyle: ConversationStyle | '', difficulty: Difficulty | '') => Promise<Object>,
-    setSearchResultEnglishWords: React.Dispatch<React.SetStateAction<string[]>>,
-    searchResultEnglishWords: Object[],
-};
-
-export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, searchResultEnglishWords }: Props) => {
+export const SearchForm: React.FC = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [situation, setSituation] = useState<Situation | ''>('');
     const [conversationStyle, setConversationStyle] = useState<ConversationStyle | ''>('');
     const [difficulty, setDifficulty] = useState<Difficulty | ''>('');
     const [searchEnglishWordsFlag, setSearchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
     const [_, setEnglishWords] = useRecoilState(englishWordsState)
-    const { createEnglishWords } = useEnglishWords();
+    const [searchResultEnglishWords, setSearchResultEnglishWords] = useRecoilState(searchResultEnglishWordsState)
+
+    const { createEnglishWords, searchEnglishWords } = useEnglishWords();
 
     const disableSearch = () => {
         return searchEnglishWordsFlag || searchResultEnglishWords.length > 0;
@@ -46,7 +42,7 @@ export const SearchForm = ({ searchEnglishWords, setSearchResultEnglishWords, se
         setSearchEnglishWordsFlag(true);
         try {
             const result: Object = await searchEnglishWords(keyword, situation, conversationStyle, difficulty);
-            setSearchResultEnglishWords(result["english_vocabulary_list"]);
+            setSearchResultEnglishWords(result["english_vocabulary_list"].map((value: Object) => { return EnglishWord.fromJson(value) }));
         } catch (error) {
             console.log(error);
         } finally {
@@ -131,13 +127,13 @@ const SearchResultBox = ({
     setSearchResultEnglishWords
 }) => {
     const englishWordsTitleList = useRecoilValue(englishWordsTitleListState);
-    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<Object[]>([]);
+    const [checkedResultEnglishWords, setCheckedResultEnglishWords] = useState<EnglishWord[]>([]);
 
     const isAlreadyAddedWord = (word: string) => {
         return englishWordsTitleList.includes(word);
     }
 
-    const handleToggle = (value: Object) => () => {
+    const handleToggle = (value: EnglishWord) => () => {
         const currentIndex = checkedResultEnglishWords.indexOf(value);
         const newChecked = [...checkedResultEnglishWords];
         if (currentIndex === -1) {
@@ -165,7 +161,7 @@ const SearchResultBox = ({
     return (
         <Box>
             <List>
-                {searchResultEnglishWords.map((value: Object) => {
+                {searchResultEnglishWords.map((value: EnglishWord) => {
                     const word: string = value["word"]
                     const labelId = `checkbox-list-label-${word}`;
 

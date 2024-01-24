@@ -19,10 +19,9 @@ const toggleLabels = ["英語リスト", "英語検索"];
 const App = () => {
     const [_, setEnglishWords] = useRecoilState(englishWordsState)
     const [selectedToggle, setSelectedToggle] = useState<string>(toggleLabels[0]);
-    const [searchResultEnglishWords, setSearchResultEnglishWords] = useState<Object[]>([]);
     const [searchEnglishWordsFlag] = useRecoilState(searchEnglishWordsFlagState)
 
-    const { fetchEnglishWordList, searchEnglishWords } = useEnglishWords();
+    const { fetchEnglishWordList } = useEnglishWords();
     useEffect(() => {
         fetchEnglishWordList(setEnglishWords);
     }, []);
@@ -35,11 +34,7 @@ const App = () => {
                     <>
                         {selectedToggle === toggleLabels[0]
                             ? (<EnglishWordsList />)
-                            : (<SearchForm
-                                searchEnglishWords={searchEnglishWords}
-                                setSearchResultEnglishWords={setSearchResultEnglishWords}
-                                searchResultEnglishWords={searchResultEnglishWords}
-                            />)}
+                            : (<SearchForm />)}
                         {
                             searchEnglishWordsFlag
                                 ? <SearchCircularProgress />
