@@ -25,7 +25,7 @@ class EnglishWord {
             synonym: json["synonym"],
             synonym_japanese: json["synonym_japanese"],
             example_sentence: json["example_sentence"],
-            description_and_origin: json["description_and_origin_japanese"],
+            description_and_origin: json["description_and_origin_japanese"] || json["description_and_origin"],
             learnedAt: new Date(json["learned_at"]),
             createdAt: new Date(json["created_at"]),
             updatedAt: new Date(json["updated_at"]),

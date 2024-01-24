@@ -45,6 +45,17 @@ const EnglishWordDetail = () => {
                         <Gap size={16} />
                         <Typography sx={{ flexGrow: '1', textAlign: 'center' }}>{selectedEnglishWord?.example_sentence["sentence_japanese_3"]}</Typography>
                         <Divider sx={{ margin: '24px' }} />
+                        <Box
+                            margin="16px"
+                            padding="16px"
+                            sx={{
+                                backgroundColor: '#f0f0f0',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            <Typography sx={{ flexGrow: '1', textAlign: 'center' }}>{selectedEnglishWord?.description_and_origin}</Typography>
+                        </Box>
+                        <Divider sx={{ margin: '24px' }} />
                         <Typography sx={{ flexGrow: '1', textAlign: 'center' }}>{selectedEnglishWord?.synonym}</Typography>
                         <Typography sx={{ flexGrow: '1', textAlign: 'center' }}>{selectedEnglishWord?.synonym_japanese}</Typography>
                     </Container>
