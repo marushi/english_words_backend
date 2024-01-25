@@ -49,8 +49,6 @@ export const useEnglishWords = () => {
                 "type": "単語"
             })
 
-        console.log(result.data)
-
         return result.data;
     }
 

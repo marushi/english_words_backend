@@ -2,9 +2,9 @@
 #
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                     root GET    /                                                                                                 english_words#index
-#                                          GET    /*path(.:format)                                                                                  english_words#index
 #                           authentication GET    /authentication(.:format)                                                                         authentication#index
 #                   authentication_sign_in GET    /authentication/sign_in(.:format)                                                                 authentication#sign_in
+#                  authentication_sign_out GET    /authentication/sign_out(.:format)                                                                authentication#sign_out
 #                 session_cognito_callback GET    /session/cognito_callback(.:format)                                                               session#cognito_callback
 #                        all_english_words GET    /english_words/all(.:format)                                                                      english_words#all
 #                       list_english_words GET    /english_words/list(.:format)                                                                     english_words#index
@@ -14,6 +14,7 @@
 #                             english_word PATCH  /english_words/:id(.:format)                                                                      english_words#update
 #                                          PUT    /english_words/:id(.:format)                                                                      english_words#update
 #                           search_english POST   /search_english(.:format)                                                                         search_english#search
+#                                          GET    /*path(.:format)                                                                                  english_words#index
 #            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
 #               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
 #            rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
@@ -41,11 +42,11 @@
 Rails.application.routes.draw do
   root 'english_words#index'
 
-  get '*path', to: 'english_words#index', constraints: ->(request){ request.format.html? }
-
   get 'authentication', to: 'authentication#index'
   get 'authentication/sign_in'
+  get 'authentication/sign_out'
   get 'session/cognito_callback'
+  get 'session/cognito_logout_callback'
 
   resources :english_words, only: %i[index create update] do
     collection do
@@ -56,4 +57,6 @@ Rails.application.routes.draw do
   end
 
   post 'search_english', to: 'search_english#search'
+
+  get '*path', to: 'english_words#index', constraints: ->(request){ request.format.html? }
 end

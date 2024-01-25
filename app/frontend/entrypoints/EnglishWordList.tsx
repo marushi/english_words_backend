@@ -13,6 +13,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EnglishWordDetail from './EnglishWordDetail';
 import { NotFoundPage } from './NotFoundPage';
+import { MenuPopper } from '../components/MenuPopper';
 
 const toggleLabels = ["英語リスト", "英語検索"];
 
@@ -48,7 +49,7 @@ const App = () => {
 
 const header = ({ selectedToggle, setSelectedToggle }) => {
     return (
-        <Box sx={{ padding: "0", margin: "0" }}>
+        <Box sx={{ padding: "0", paddingRight: "12px", margin: "0" }}>
             <ToggleButtonGroup
                 color="primary"
                 value={selectedToggle}
@@ -60,6 +61,7 @@ const header = ({ selectedToggle, setSelectedToggle }) => {
                     </ToggleButton>
                 })}
             </ToggleButtonGroup>
+            <MenuPopper />
         </Box>
     )
 }
@@ -68,7 +70,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <RecoilRoot>
         <BrowserRouter>
             <Routes>
-                <Route path="/english_words" element={<App />} />
+                <Route path="/" element={<App />} />
                 <Route path="/english_words/:id" element={<EnglishWordDetail />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>

@@ -23,7 +23,6 @@ import {
 } from "../atoms/EnglishWords";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EditIcon from '@mui/icons-material/Edit';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { editEnglishWordsFlagState } from "../atoms/EditEnglishWordsFlag";
 import { EnglishWordsListEditAnimation } from "./EnglishWordsListEditAnimation";
@@ -156,13 +155,10 @@ const actionButtons = ({ setCheckedEnglishWords, checkedEnglishWords, setEnglish
                     <EnglishWordsDelete editEnglishWordsFlag={editEnglishWordsFlag} deleteEnglishWords={handleDeleteEnglishWords} />
                 </EnglishWordsListEditAnimation>
                 <IconButton >
-                    <EditIcon sx={{ color: "#c0c0c0" }} onClick={() => { handleEditEnglishWords() }} />
+                    <EditIcon sx={{ color: "#a0a0a0" }} onClick={() => { handleEditEnglishWords() }} />
                 </IconButton>
                 <IconButton>
-                    <FilterListIcon sx={{ color: "#c0c0c0" }} />
-                </IconButton>
-                <IconButton>
-                    <PlayCircleOutlineIcon sx={{ color: "#c0c0c0" }} />
+                    <PlayCircleOutlineIcon sx={{ color: "#a0a0a0" }} />
                 </IconButton>
             </Box>
         </Box>

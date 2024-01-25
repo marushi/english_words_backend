@@ -8,6 +8,11 @@ class SessionController < ApplicationController
     redirect_to root_path
   end
 
+  def cognito_logout_callback
+    session[:cognito_uuid] = nil
+    redirect_to root_path
+  end
+
   private
 
   def exchange_authorization_code_for_tokens(authorization_code)

@@ -14,8 +14,6 @@ const EnglishWordDetail = () => {
     const [_, setEnglishWords] = useRecoilState(englishWordsState)
     const [selectedEnglishWord] = useRecoilState(selectedEnglishWordState)
 
-    console.log(selectedEnglishWord)
-
     useEffect(() => {
         if (selectedEnglishWord === undefined) {
             navigate(-1)

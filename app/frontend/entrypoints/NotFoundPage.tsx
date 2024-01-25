@@ -14,7 +14,7 @@ export const NotFoundPage: React.FC = () => {
                 下記ボタンからトップページへ戻ってください
             </Typography>
             <Gap size={16} />
-            <Button variant="contained" color="primary" href="/english_words">
+            <Button variant="contained" color="primary" href="/">
                 トップページへ
             </Button>
         </Box>
