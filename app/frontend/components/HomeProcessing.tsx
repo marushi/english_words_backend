@@ -32,7 +32,7 @@ const processing = (p: p5) => {
             let x = xPosition();
             let y = yPosition();
 
-            const particle = new Particle(alphabet, p.createVector(x, y))
+            const particle = new Particle(alphabet, p.createVector(x, y));
             particles.push(particle);
         })
     }
@@ -65,7 +65,7 @@ const processing = (p: p5) => {
     }
 
     function circleXPosition(index: number, alphabetArrayLength = alphabetArray.length) {
-        return p.width / 2 + p.width / 3 * Math.cos(index / alphabetArrayLength * 2 * Math.PI)
+        return p.width / 2 + p.width / 3 * Math.cos(index / alphabetArrayLength * 2 * Math.PI);
     }
 
     function circleYPosition(index: number, alphabetArrayLength = alphabetArray.length) {

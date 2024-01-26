@@ -16,7 +16,7 @@ type Props = {
 export const AppLayout = ({ header, children }: Props) => {
     return (
         <React.StrictMode>
-            <Container maxWidth="sm">
+            <Container >
                 {header}
                 <Gap size={16} />
                 {children}

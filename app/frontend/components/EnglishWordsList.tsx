@@ -24,23 +24,18 @@ import {
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import { editEnglishWordsFlagState } from "../atoms/EditEnglishWordsFlag";
+import { EditEnglishWordsFlagState } from "../atoms/EditEnglishWordsFlagState";
 import { EnglishWordsListEditAnimation } from "./EnglishWordsListEditAnimation";
 import { EnglishWordsDelete } from "./EnglishWordsDelete";
 import { useEnglishWords } from "../hooks/UseEnglishWords";
 import { useNavigate } from "react-router-dom";
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 
 export const EnglishWordsList: React.FC = () => {
     const [englishWordsPage, setEnglishWordsPage] = useRecoilState(englishWordsPageState)
     const [englishWordsCountPerPage, setEnglishWordsCountPerPage] = useRecoilState(englishWordsCountPerPageState)
     const englishWordsPerPage = useRecoilValue(englishWordsPerPageState)
     const maxEnglishWordsPage = useRecoilValue(maxEnglishWordsPageState)
-    const [editEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
+    const [editEnglishWordsFlag] = useRecoilState(EditEnglishWordsFlagState)
     const [checkedEnglishWords, setCheckedEnglishWords] = useState<EnglishWord[]>([]);
     const [, setEnglishWords] = useRecoilState(englishWordsState)
     const [, setSelectedEnglishWord] = useRecoilState(selectedEnglishWordState)
@@ -136,7 +131,7 @@ const checkBox = ({ editEnglishWordsFlag, checkedEnglishWords, englishWord, labe
 }
 
 const actionButtons = ({ setCheckedEnglishWords, checkedEnglishWords, setEnglishWords }) => {
-    const [editEnglishWordsFlag, setEditEnglishWordsFlag] = useRecoilState(editEnglishWordsFlagState)
+    const [editEnglishWordsFlag, setEditEnglishWordsFlag] = useRecoilState(EditEnglishWordsFlagState);
     const { deleteEnglishWords } = useEnglishWords();
 
     const handleEditEnglishWords = () => {
