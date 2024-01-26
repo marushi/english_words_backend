@@ -14,10 +14,10 @@ class ApplicationController < ActionController::API
     begin
       authorize_with_refresh_token!
     rescue CognitoTokensMissingError
-      redirect_to authentication_path
+      redirect_to home_path
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_to authentication_path
+    redirect_to home_path
   end
 
   def authorize_with_refresh_token!

@@ -2,10 +2,8 @@
 import { MenuItem, IconButton, Box, Menu, Button } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import React from 'react';
-import { useAuthentication } from '../hooks/UseAuthentication';
 
 export const MenuPopper: React.FC = () => {
-    const { signOut } = useAuthentication()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -16,10 +14,6 @@ export const MenuPopper: React.FC = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const handleSignOut = () => {
-        signOut();
-    }
 
     return (
         <Box sx={{ float: "right" }}>

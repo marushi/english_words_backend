@@ -6,6 +6,8 @@
 #                   authentication_sign_in GET    /authentication/sign_in(.:format)                                                                 authentication#sign_in
 #                  authentication_sign_out GET    /authentication/sign_out(.:format)                                                                authentication#sign_out
 #                 session_cognito_callback GET    /session/cognito_callback(.:format)                                                               session#cognito_callback
+#          session_cognito_logout_callback GET    /session/cognito_logout_callback(.:format)                                                        session#cognito_logout_callback
+#                                     home GET    /home(.:format)                                                                                   home#index
 #                        all_english_words GET    /english_words/all(.:format)                                                                      english_words#all
 #                       list_english_words GET    /english_words/list(.:format)                                                                     english_words#index
 #                            english_words DELETE /english_words/destroy(.:format)                                                                  english_words#destroy
@@ -47,6 +49,7 @@ Rails.application.routes.draw do
   get 'authentication/sign_out'
   get 'session/cognito_callback'
   get 'session/cognito_logout_callback'
+  get 'home', to: 'home#index'
 
   resources :english_words, only: %i[index create update] do
     collection do
