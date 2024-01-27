@@ -32,7 +32,7 @@ const header = () => {
       </Typography>
       <Button
         color='primary'
-        href="http://localhost:53000/authentication/sign_in"
+        href="authentication/sign_in"
       >
         ログイン
       </Button>

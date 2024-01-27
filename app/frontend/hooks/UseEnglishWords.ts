@@ -7,7 +7,7 @@ export const useEnglishWords = () => {
     const { fetchAPI } = useFetchAPI();
 
     const fetchEnglishWordList = async (setEnglishWords: (englishWords: EnglishWord[]) => void) => {
-        const result: Object[] = await fetchAPI('http://localhost:53000/english_words/all');
+        const result: Object[] = await fetchAPI('/english_words/all');
         const englishWords: EnglishWord[] = result.map((result) => {
             return EnglishWord.fromJson(result);
         });
@@ -15,7 +15,7 @@ export const useEnglishWords = () => {
     }
 
     const createEnglishWords = async (englishWords: EnglishWord[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
-        const result = await axios.post('http://localhost:53000/english_words', {
+        const result = await axios.post('/english_words', {
             english_words: englishWords
         });
         if (result.status === 200) {
@@ -24,7 +24,7 @@ export const useEnglishWords = () => {
     }
 
     const deleteEnglishWords = async (englishWords: EnglishWord[], setEnglishWords: (englishWords: EnglishWord[]) => void) => {
-        const result = await axios.delete('http://localhost:53000/english_words/destroy', {
+        const result = await axios.delete('/english_words/destroy', {
             data: {
                 english_words: englishWords.map((englishWord) => { return { id: englishWord.id } })
             }
@@ -40,7 +40,7 @@ export const useEnglishWords = () => {
         style: string,
         difficulty: string,
     ) => {
-        const result = await axios.post('http://localhost:53000/search_english',
+        const result = await axios.post('/search_english',
             {
                 "keyword": keyword,
                 "situation": situation,

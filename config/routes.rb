@@ -44,7 +44,6 @@
 Rails.application.routes.draw do
   root 'english_words#index'
 
-  get 'authentication', to: 'authentication#index'
   get 'authentication/sign_in'
   get 'authentication/sign_out'
   get 'session/cognito_callback'

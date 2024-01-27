@@ -16,7 +16,7 @@ class AuthenticationController < ApplicationController
   def redirect_uri
     domain = ENV.fetch('AWS_COGNITO_DOMAIN', nil)
     client_id = ENV.fetch('AWS_COGNITO_APP_CLIENT_ID', nil)
-    redirect_uri = ENV.fetch('AWS_COGNITO_REDIRECT_URI', nil)
+    redirect_uri = create_redirect_uri(ENV.fetch('AWS_COGNITO_REDIRECT_URI', nil))
 
     "#{domain}/login?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}"
   end
@@ -24,8 +24,16 @@ class AuthenticationController < ApplicationController
   def logout_uri
     domain = ENV.fetch('AWS_COGNITO_DOMAIN', nil)
     client_id = ENV.fetch('AWS_COGNITO_APP_CLIENT_ID', nil)
-    redirect_uri = 'http://localhost:53000/session/cognito_logout_callback'
+    redirect_uri = create_redirect_uri(ENV.fetch('AWS_COGNITO_SIGNOUT_URI', nil))
 
     "#{domain}/logout?client_id=#{client_id}&logout_uri=#{redirect_uri}"
+  end
+
+  def create_redirect_uri(url)
+    protcol = request.protocol
+    host = request.host
+    port = request.port.nil? ? '' : ":#{request.port}"
+
+    "#{protcol}#{host}#{port}#{url}"
   end
 end

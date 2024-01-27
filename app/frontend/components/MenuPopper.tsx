@@ -33,7 +33,7 @@ export const MenuPopper: React.FC = () => {
             >
                 <MenuItem >
                     <Button
-                        href="http://localhost:53000/authentication/sign_out"
+                        href="/authentication/sign_out"
                         sx={{
                             padding: "0",
                             margin: "0",
@@ -41,6 +41,6 @@ export const MenuPopper: React.FC = () => {
                     >ログアウト</Button>
                 </MenuItem>
             </Menu>
-        </Box>
+        </Box >
     )
 }

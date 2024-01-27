@@ -17,6 +17,11 @@ module AuthenticationHelper
     refresh_token = response_hash['refresh_token']
     expires_in = response_hash['expires_in']
 
+    Rails.logger.info "response: #{oauth2_token_response.inspect}"
+    Rails.logger.info "access_token: #{access_token}"
+    Rails.logger.info "refresh_token: #{refresh_token}"
+    Rails.logger.info "expires_in: #{expires_in}"
+
     raise CognitoTokensMissingError unless access_token && expires_in
 
     cognito_uuid = fetch_cognito_uuid(access_token)
@@ -26,9 +31,7 @@ module AuthenticationHelper
 
   def fetch_cognito_uuid(access_token)
     client = Aws::CognitoIdentityProvider::Client.new
-    resp = client.get_user({
-                             access_token:
-                           })
+    resp = client.get_user({ access_token: })
 
     resp.user_attributes.each do |attribute|
       return attribute.value if attribute.name == 'sub'
