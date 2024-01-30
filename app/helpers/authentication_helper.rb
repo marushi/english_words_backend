@@ -17,11 +17,6 @@ module AuthenticationHelper
     refresh_token = response_hash['refresh_token']
     expires_in = response_hash['expires_in']
 
-    Rails.logger.info "response: #{oauth2_token_response.inspect}"
-    Rails.logger.info "access_token: #{access_token}"
-    Rails.logger.info "refresh_token: #{refresh_token}"
-    Rails.logger.info "expires_in: #{expires_in}"
-
     raise CognitoTokensMissingError unless access_token && expires_in
 
     cognito_uuid = fetch_cognito_uuid(access_token)
@@ -48,5 +43,13 @@ module AuthenticationHelper
     update_params[:refresh_token] = refresh_token unless refresh_token.nil?
 
     user.update(update_params)
+  end
+
+  def create_redirect_uri(url)
+    protcol = request.protocol
+    host = request.host
+    port = request.port.nil? ? '' : ":#{request.port}"
+
+    "#{protcol}#{host}#{port}#{url}"
   end
 end

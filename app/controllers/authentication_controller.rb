@@ -1,4 +1,6 @@
 class AuthenticationController < ApplicationController
+  include AuthenticationHelper
+
   skip_before_action :authenticate_request, only: %i[index sign_in]
 
   def index; end
@@ -18,7 +20,7 @@ class AuthenticationController < ApplicationController
     client_id = ENV.fetch('AWS_COGNITO_APP_CLIENT_ID', nil)
     redirect_uri = create_redirect_uri(ENV.fetch('AWS_COGNITO_REDIRECT_URI', nil))
 
-    "#{domain}/login?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}"
+    "#{domain}/oauth2/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}"
   end
 
   def logout_uri
@@ -27,13 +29,5 @@ class AuthenticationController < ApplicationController
     redirect_uri = create_redirect_uri(ENV.fetch('AWS_COGNITO_SIGNOUT_URI', nil))
 
     "#{domain}/logout?client_id=#{client_id}&logout_uri=#{redirect_uri}"
-  end
-
-  def create_redirect_uri(url)
-    protcol = request.protocol
-    host = request.host
-    port = request.port.nil? ? '' : ":#{request.port}"
-
-    "#{protcol}#{host}#{port}#{url}"
   end
 end
