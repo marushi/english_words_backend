@@ -1,13 +1,18 @@
-volumes:
-  db-data:
+version: '3.8'
 services:
   # --------------------------------------
   db:
-    image: postgres:16.1
+    image: mysql:latest
+    hostname: db
     environment:
-      MARIADB_ROOT_PASSWORD: password
+      MYSQL_DATABASE: english_words_development
+      MYSQL_USER: root
+      MYSQL_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: pass
     volumes:
       - db-data:/var/lib/mysql
+    ports:
+      - '3306:3306'
   # --------------------------------------
   rails:
     build:
@@ -20,14 +25,15 @@ services:
       BUNDLE_HOME: '/app'
       DATABASE_NAME: 'english_words_development'
       DATABASE_USERNAME: 'root'
-      DATABASE_HOSTNAME: 'mysql'
+      DATABASE_HOSTNAME: 'db'
       DATABASE_PASSWORD: 'pass'
       RAILS_PORT: 53000
     volumes:
       - .:/app
     tty: true
     stdin_open: true
-    networks:
-      - default
     ports:
       - '53000:3000'
+
+volumes:
+  db-data:
