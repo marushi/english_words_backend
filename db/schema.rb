@@ -10,27 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_23_145932) do
-  create_table "english_words", force: :cascade do |t|
+ActiveRecord::Schema[7.1].define(version: 2024_01_31_000058) do
+  create_table "english_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "word", null: false
     t.datetime "learned_at"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.integer "user_id"
+    t.datetime "created_at", default: -> { "(curdate())" }, null: false
+    t.datetime "updated_at", default: -> { "(curdate())" }, null: false
+    t.bigint "user_id"
     t.string "word_japanese", default: "", null: false
     t.string "phonetic_symbol", default: "", null: false
-    t.json "example_sentence", default: {}, null: false
+    t.json "example_sentence", null: false
     t.string "synonym", default: "", null: false
     t.string "synonym_japanese", default: "", null: false
     t.string "description_and_origin", default: "", null: false
     t.index ["user_id"], name: "index_english_words_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", default: -> { "(curdate())" }, null: false
+    t.datetime "updated_at", default: -> { "(curdate())" }, null: false
     t.string "cognito_uuid", null: false
-    t.string "refresh_token"
+    t.string "refresh_token", limit: 2048
     t.integer "expires_in"
     t.datetime "authorized_at", null: false
   end

@@ -12,11 +12,11 @@ end
 #
 # Table name: users
 #
-#  id            :integer          not null, primary key
+#  id            :bigint           not null, primary key
 #  authorized_at :datetime         not null
-#  cognito_uuid  :string           not null
+#  cognito_uuid  :string(255)      not null
 #  expires_in    :integer
-#  refresh_token :string
+#  refresh_token :string(2048)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
