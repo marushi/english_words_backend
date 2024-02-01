@@ -19,5 +19,5 @@ production:
   password: <%= Rails.application.credentials.planetscale&.fetch(:password) %>
   database: <%= Rails.application.credentials.planetscale&.fetch(:database) %>
   host: <%= Rails.application.credentials.planetscale&.fetch(:host) %>
-  sslmode: verify-full
-  sslrootcert: "/etc/ssl/certs/ca-certificates.crt"
+  ssl_mode: verify_identity
+  sslca: "/etc/ssl/certs/ca-certificates.crt"
