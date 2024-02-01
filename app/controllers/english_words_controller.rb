@@ -52,7 +52,7 @@ class EnglishWordsController < ApplicationController
 
   def set_create_params!
     @params = params.require(:english_words).map do |english_word_params|
-      english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, :description_and_origin,
+      english_word_params.permit(:word, :word_japanese, :phonetic_symbol, :synonym, :synonym_japanese, :description_and_origin, :learned_at, :updated_at, :created_at,
                                  example_sentence: [:sentence_1, :sentence_japanese_1, :sentence_2, :sentence_japanese_2, :sentence_3, :sentence_japanese_3])
     end
   end

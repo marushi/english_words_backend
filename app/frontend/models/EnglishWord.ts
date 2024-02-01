@@ -1,6 +1,6 @@
 class EnglishWord {
     id!: number;
-    learnedAt!: Date;
+    learned_at!: Date;
     word!: string;
     word_japanese!: string;
     phonetic_symbol!: string;
@@ -8,9 +8,9 @@ class EnglishWord {
     synonym_japanese!: string;
     example_sentence!: string[];
     description_and_origin!: string;
-    userId!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
+    user_id!: number;
+    created_at!: Date;
+    updated_at!: Date;
 
     constructor(init: Required<EnglishWord>) {
         Object.assign(this, init);
@@ -26,10 +26,10 @@ class EnglishWord {
             synonym_japanese: json["synonym_japanese"],
             example_sentence: json["example_sentence"],
             description_and_origin: json["description_and_origin_japanese"] || json["description_and_origin"],
-            learnedAt: new Date(json["learned_at"]),
-            createdAt: new Date(json["created_at"]),
-            updatedAt: new Date(json["updated_at"]),
-            userId: json["user_id"],
+            learned_at: new Date(json["learned_at"]),
+            created_at: new Date(json["created_at"]),
+            updated_at: new Date(json["updated_at"]),
+            user_id: json["user_id"],
         });
     }
 }
