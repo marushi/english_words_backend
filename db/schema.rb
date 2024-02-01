@@ -10,20 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_31_000058) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_23_145932) do
   create_table "english_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "word", null: false
     t.datetime "learned_at"
     t.datetime "created_at", default: -> { "(curdate())" }, null: false
     t.datetime "updated_at", default: -> { "(curdate())" }, null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.string "word_japanese", default: "", null: false
     t.string "phonetic_symbol", default: "", null: false
     t.json "example_sentence", null: false
     t.string "synonym", default: "", null: false
     t.string "synonym_japanese", default: "", null: false
     t.string "description_and_origin", default: "", null: false
-    t.index ["user_id"], name: "index_english_words_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -35,5 +34,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_31_000058) do
     t.datetime "authorized_at", null: false
   end
 
-  add_foreign_key "english_words", "users"
 end
