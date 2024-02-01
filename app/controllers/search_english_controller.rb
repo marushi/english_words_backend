@@ -24,6 +24,12 @@ class SearchEnglishController < ApplicationController
     property_common = {
       'type' => 'object',
       'properties' => {
+        'word' => { 'type' => 'string', 'description' => '英単語' },
+        'word_japanese' => { 'type' => 'string', 'description' => 'wordの日本語訳' },
+        'phonetic_symbol' => { 'type' => 'string', 'description' => 'wordの発音記号' },
+        'synonym' => { 'type' => 'string', 'description' => 'wordの類義語' },
+        'synonym_japanese' => { 'type' => 'string', 'description' => 'wordの類義語の日本語訳' },
+        'description_and_origin_japanese' => { 'type' => 'string',  'description' => '簡潔なwordの語源と意味の日本語説明（日本語で）' },
         'example_sentence' => {
           'type' => 'object',
           'description' => 'wordを使った例文リスト',
@@ -35,14 +41,10 @@ class SearchEnglishController < ApplicationController
             'sentence_3' => { 'type' => 'string', 'description' => '例文英語3' },
             'sentence_japanese_3' => { 'type' => 'string', 'description' => '例文日本語3' },
           },
+          'required' => %w[sentence_1 sentence_japanese_1 sentence_2 sentence_japanese_2 sentence_3 sentence_japanese_3]
         },
-        'phonetic_symbol' => { 'type' => 'string' },
-        'synonym' => { 'type' => 'string' },
-        'synonym_japanese' => { 'type' => 'string' },
-        'word' => { 'type' => 'string' },
-        'word_japanese' => { 'type' => 'string'},
-        'description_and_origin_japanese' => { 'type' => 'string',  'description' => '簡潔なwordの語源と意味の日本語説明（日本語で）' },
-      }
+      },
+      'required' => %w[word word_japanese phonetic_symbol example_sentence synonym synonym_japanese description_and_origin_japanese]
     }
 
 functions = [
@@ -75,7 +77,7 @@ functions = [
           {
             'role' => 'system',
             'content' => <<~SYSTEM_MESSAGE
-              あなたは英語学習アプリのアシスタントです。英語学習者に言われた条件の英語#{type}を7個返却してください。全て英語と日本語を返してください。条件は以下です。
+              あなたは英語学習アプリのアシスタントです。英語学習者に言われた条件の英語#{type}を7個返却してください。条件は以下です。
               キーワード：#{keyword}
               シチュエーション：#{situation}
               スタイル：#{style}
